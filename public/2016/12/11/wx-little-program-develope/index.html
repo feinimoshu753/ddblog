@@ -1,0 +1,481 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>微信小程序开发尝试 | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="大概是9月底微信小程序开放了内测，引起了业界不小的反应。讨论了很多关于小程序的内容，比如是否能够颠覆原生应用，小程序对前端开发的影响等等。作为一个三流水准的前端开发者，我更加关注的小程序开发的体验如何，和现在的前端开发有什么区别，它的实现原理是什么。">
+<meta name="keywords" content="微信小程序">
+<meta property="og:type" content="article">
+<meta property="og:title" content="微信小程序开发尝试">
+<meta property="og:url" content="http://yoursite.com/2016/12/11/wx-little-program-develope/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="大概是9月底微信小程序开放了内测，引起了业界不小的反应。讨论了很多关于小程序的内容，比如是否能够颠覆原生应用，小程序对前端开发的影响等等。作为一个三流水准的前端开发者，我更加关注的小程序开发的体验如何，和现在的前端开发有什么区别，它的实现原理是什么。">
+<meta property="og:updated_time" content="2018-01-21T09:46:53.330Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="微信小程序开发尝试">
+<meta name="twitter:description" content="大概是9月底微信小程序开放了内测，引起了业界不小的反应。讨论了很多关于小程序的内容，比如是否能够颠覆原生应用，小程序对前端开发的影响等等。作为一个三流水准的前端开发者，我更加关注的小程序开发的体验如何，和现在的前端开发有什么区别，它的实现原理是什么。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/12/11/wx-little-program-develope/" title="微信小程序开发尝试" itemprop="url">微信小程序开发尝试</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2016-12-11T12:17:47.000Z" itemprop="datePublished"> Published 2016-12-11</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			
+		
+		</div>
+		
+		<p>大概是9月底微信小程序开放了内测，引起了业界不小的反应。讨论了很多关于小程序的内容，比如是否能够颠覆原生应用，小程序对前端开发的影响等等。作为一个三流水准的前端开发者，我更加关注的小程序开发的体验如何，和现在的前端开发有什么区别，它的实现原理是什么。</p>
+<a id="more"></a>
+<p>9月底开放内测的时候，第二天就在网上找了破解的开发工具体验了一下，简单的写了一个静态页面，当时的感觉代码写的不是那么顺手，没有其他的感觉。到了11月底，小程序开放公测后，开始对小程序有一些了解，然后动手写了一点东西。现在总结一下自己对小程序的认识和开发上的感受：</p>
+<p>一、小程序是怎么实现的？</p>
+<p>小程序给我们提供了一些基本组件，如view、image、navigator等等，开放了一些接口，如websocket、网络请求等等。网上一些文章分析小程序是一个和react-native相似的一个框架，另一些文章认为小程序就是webview加载小程序提供的基础组件，其中header和bottombar是原生实现的。现在不知道微信有没有介绍小程序实现的原理，不过我个人更偏向于小程序是微信客户端webview加载小程序提供的虚拟组件。</p>
+<p>二、开发难度如何？</p>
+<p>感觉上手还是比较简单的，前端开发者如果熟悉vue和react等框架的话应该会更容易一些，如果不熟悉也没问题，了解一下数据绑定等内容，上手就比较快了。移动端开发者的话可能要花一点时间适应，写wxml和wxss可能问题不是很大，js可能要慢一些，毕竟和java、oc、swift还是有挺大区别的。</p>
+<p>三、有哪些问题？</p>
+<p>目前就写了两、三个完整的页面，有一些问题网上也有介绍，比如小程序打包后必须小于1mb，不支持html代码（目前有解决的库），不能跳转外部网页，最多只能加载5层页面等等（大部分可以在官方文档上了解到）。目前这些问题还没怎么遇到，目前遇到的一个问题是页面加载多次后，有时会出现白屏，需要等待很长时间才能显示，目前还没有找到问题的原因（遇到这种情况的童鞋也可以留言交流）。</p>
+<p>目前小程序提供的组件应对不那么复杂的页面效果是没有问题，要实现一些特别的效果的话，还是有一些难度。</p>
+<p>四、开发体验如何？</p>
+<p>微信开发者工具实在是很难用。。。。。代码提示很弱。。有时还会卡顿。。后来尝试了一下Erget Wing 3，感觉体验也不好。。。。。想用idea开发，但是没找到合适的插件。。。。。最后还是用微信开发者工具写的。。。。。心碎。。。</p>
+<p>目前的开发的感受就这么多，之后还有别的问题再继续修改好了。最后留一下我开发小程序过程中参考的一些东西：</p>
+<p>官方文档：<a href="https://mp.weixin.qq.com/debug/wxadoc/dev/index.html?t=20161107" target="_blank" rel="noopener">https://mp.weixin.qq.com/debug/wxadoc/dev/index.html?t=20161107</a></p>
+<p>小程序开发论坛：<a href="https://weappdev.com/" target="_blank" rel="noopener">https://weappdev.com/</a></p>
+<p>小程序联盟：<a href="http://www.wxapp-union.com/portal.php" target="_blank" rel="noopener">http://www.wxapp-union.com/portal.php</a></p>
+<p>小程序数据统计：<a href="http://www.aldwx.com/index.php" target="_blank" rel="noopener">http://www.aldwx.com/index.php</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/微信小程序/">微信小程序</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2016/12/11/wx-little-program-develope/" data-title="微信小程序开发尝试 | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/01/06/essays-2016-summarize/" title="2016年年度总结">
+  <strong>上一篇：</strong><br/>
+  <span>
+  2016年年度总结</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2016/08/07/web-sui-mobile/"  title="【sui-mobile踩坑之旅】实现横向滚动列表">
+ <strong>下一篇：</strong><br/> 
+ <span>【sui-mobile踩坑之旅】实现横向滚动列表
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

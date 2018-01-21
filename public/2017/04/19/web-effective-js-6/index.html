@@ -1,0 +1,482 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>effective javascript(六)——掌握闭包 | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="###一、什么是闭包的？MDN的解释：闭包是指那些能够访问独立(自由)变量的函数 (变量在本地使用，但定义在一个封闭的作用域中)。换句话说，这些函数可以“记忆”它被创建时候的环境。">
+<meta name="keywords" content="前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="effective javascript(六)——掌握闭包">
+<meta property="og:url" content="http://yoursite.com/2017/04/19/web-effective-js-6/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="###一、什么是闭包的？MDN的解释：闭包是指那些能够访问独立(自由)变量的函数 (变量在本地使用，但定义在一个封闭的作用域中)。换句话说，这些函数可以“记忆”它被创建时候的环境。">
+<meta property="og:updated_time" content="2018-01-21T09:53:50.264Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="effective javascript(六)——掌握闭包">
+<meta name="twitter:description" content="###一、什么是闭包的？MDN的解释：闭包是指那些能够访问独立(自由)变量的函数 (变量在本地使用，但定义在一个封闭的作用域中)。换句话说，这些函数可以“记忆”它被创建时候的环境。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/04/19/web-effective-js-6/" title="effective javascript(六)——掌握闭包" itemprop="url">effective javascript(六)——掌握闭包</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2017-04-19T15:18:10.000Z" itemprop="datePublished"> Published 2017-04-19</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			
+		
+		</div>
+		
+		<p>###一、什么是闭包的？<br>MDN的解释：闭包是指那些能够访问独立(自由)变量的函数 (变量在本地使用，但定义在一个封闭的作用域中)。换句话说，这些函数可以“记忆”它被创建时候的环境。</p>
+<a id="more"></a>
+<p>直接看定义也比较难以理解，还是先看一个例子：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">function funA() &#123;</span><br><span class="line">  var name = &quot;hello&quot;;</span><br><span class="line">  function hello() &#123;</span><br><span class="line">    window.console.log(name);</span><br><span class="line">  &#125;</span><br><span class="line">  return hello;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var funB = funA();</span><br><span class="line">funB(); //&quot;hello&quot;</span><br></pre></td></tr></table></figure>
+<p>var funB = funA();执行后,上面的funB可以等价于：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">funB = function hello()&#123;</span><br><span class="line">	window.console.log(name);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>调用funB的结果为”hello”，hello函数依然能够引用外部的name变量。可以说明funB函数依然保留了funA的环境，能够继续引用funA内的变量，funB就称为闭包。</p>
+<p>###二、闭包可以引用外部函数的参数<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">function funA(firstName) &#123;</span><br><span class="line">  function displayName(lastName) &#123;</span><br><span class="line">    window.console.log(firstName + &apos; &apos; + lastName);</span><br><span class="line">  &#125;</span><br><span class="line">  return displayName;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var funB = funA(&apos;jack&apos;);</span><br><span class="line">funB(&apos;lee&apos;); //&quot;jack lee&quot;</span><br><span class="line">funB(&apos;young&apos;); //&quot;jack young&quot;</span><br><span class="line"></span><br><span class="line">var funC = funA(&apos;louise&apos;);</span><br><span class="line">funC(&apos;nancy&apos;); // &quot;louise nancy&quot;</span><br><span class="line">funC(&apos;mark&apos;);  // &quot;louise mark&quot;</span><br></pre></td></tr></table></figure></p>
+<p>上面的例子创建了funB和funC2个完全不同的函数，虽然他们都是通过funA进行创建的，但是它们是完全不同的对象。其中funB的firstName为jack，funC的firstName为louise。</p>
+<p>###三、闭包可以更新外部变量的值</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br></pre></td><td class="code"><pre><span class="line">function myFunction()&#123;</span><br><span class="line">    var value = &apos;hello&apos;;</span><br><span class="line">    return&#123;</span><br><span class="line">        set: function (newValue) &#123;</span><br><span class="line">            value = newValue;</span><br><span class="line">        &#125;,</span><br><span class="line">        get: function () &#123;</span><br><span class="line">            return value;</span><br><span class="line">        &#125;,</span><br><span class="line">        type: function () &#123;</span><br><span class="line">            return typeof value;</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">var func = myFunction();</span><br><span class="line">log(func.type()); //string</span><br><span class="line">log(func.get());  //hello</span><br><span class="line">func.set(22);</span><br><span class="line">log(func.type());  //number</span><br><span class="line">log(func.get());  //22</span><br></pre></td></tr></table></figure>
+<p>func一共产生了3个闭包对象（set，get，type），它们共同访问value对象，set更新了value值，之后get和type可以查看到更新的结果。</p>
+<p>###四、闭包的常见使用（容易出错）<br>html代码中有3个img标签，点击不同的img标签，查看不同图片的大图。事例如下：<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">html:</span><br><span class="line">&lt;img src=&quot;img1&quot;/&gt;</span><br><span class="line">&lt;img src=&quot;img2&quot;/&gt;</span><br><span class="line">&lt;img src=&quot;img3&quot;/&gt;</span><br></pre></td></tr></table></figure></p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">var imgs = document.getElementsByTagName(&apos;img&apos;);</span><br><span class="line">for(var i=0;i&lt;imgs.length;i++)&#123;</span><br><span class="line">    imgs[i].onclick = function () &#123;</span><br><span class="line">       imgBrowser(imgs[i].getAttribute(&apos;src&apos;));</span><br><span class="line">    &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>表面上看这段代码没有任何问题，但是点击图片会报错。调用imgBrowser(imgs[i].getAttribute(‘src’))代码时，其中的i的值为3；因为for循环结束后，i的值为3，所以点击事件响应的结果都是i为3时的结果。<br>参考上面的代码，我们可以使用闭包来解决i值的问题：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">var imgs = document.getElementsByTagName(&apos;img&apos;);</span><br><span class="line">for(var i=0;i&lt;imgs.length;i++)&#123;</span><br><span class="line">    imgs[i].onclick = (function(j)&#123;</span><br><span class="line">        return function () &#123;</span><br><span class="line">	        imgBrowser(imgs[j].getAttribute(&apos;src&apos;));</span><br><span class="line">        &#125;</span><br><span class="line">    &#125;)(i);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<hr>
+<p>end…</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/前端/">前端</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2017/04/19/web-effective-js-6/" data-title="effective javascript(六)——掌握闭包 | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/04/20/web-effective-js-7/" title="effective javascript(七)——命名函数表达式">
+  <strong>上一篇：</strong><br/>
+  <span>
+  effective javascript(七)——命名函数表达式</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/04/19/web-effective-js-5/"  title="effective javascript(五)——变量作用域">
+ <strong>下一篇：</strong><br/> 
+ <span>effective javascript(五)——变量作用域
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,472 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Vue源码解析（五） | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="接下来看看renderMixin方法，这个方法在Vue的原型上增加了$nextTick、_render以及_o、_n、_s等方法。">
+<meta name="keywords" content="前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue源码解析（五）">
+<meta property="og:url" content="http://yoursite.com/2017/09/06/web-vue-source-code-analysis-5/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="接下来看看renderMixin方法，这个方法在Vue的原型上增加了$nextTick、_render以及_o、_n、_s等方法。">
+<meta property="og:updated_time" content="2018-01-21T09:55:10.518Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue源码解析（五）">
+<meta name="twitter:description" content="接下来看看renderMixin方法，这个方法在Vue的原型上增加了$nextTick、_render以及_o、_n、_s等方法。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/09/06/web-vue-source-code-analysis-5/" title="Vue源码解析（五）" itemprop="url">Vue源码解析（五）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2017-09-06T15:03:45.000Z" itemprop="datePublished"> Published 2017-09-06</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			
+		
+		</div>
+		
+		<p>接下来看看renderMixin方法，这个方法在Vue的原型上增加了<code>$nextTick</code>、<code>_render</code>以及<code>_o、_n、_s</code>等方法。</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype.$nextTick = function (fn) &#123;</span><br><span class="line">    return nextTick(fn, this)</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+<p><code>$nextTick</code>方法传入一个函数，同时调用nextTick方法，传入的fn是dom刷新之后的回调。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br><span class="line">59</span><br><span class="line">60</span><br><span class="line">61</span><br><span class="line">62</span><br><span class="line">63</span><br><span class="line">64</span><br><span class="line">65</span><br><span class="line">66</span><br><span class="line">67</span><br><span class="line">68</span><br><span class="line">69</span><br><span class="line">70</span><br><span class="line">71</span><br><span class="line">72</span><br><span class="line">73</span><br><span class="line">74</span><br><span class="line">75</span><br><span class="line">76</span><br><span class="line">77</span><br><span class="line">78</span><br><span class="line">79</span><br><span class="line">80</span><br><span class="line">81</span><br><span class="line">82</span><br></pre></td><td class="code"><pre><span class="line">var nextTick = (function () &#123;</span><br><span class="line">  var callbacks = [];</span><br><span class="line">  var pending = false;</span><br><span class="line">  var timerFunc;</span><br><span class="line"></span><br><span class="line">  function nextTickHandler () &#123;</span><br><span class="line">    pending = false;</span><br><span class="line">    var copies = callbacks.slice(0);</span><br><span class="line">    callbacks.length = 0;</span><br><span class="line">    for (var i = 0; i &lt; copies.length; i++) &#123;</span><br><span class="line">      copies[i]();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  // the nextTick behavior leverages the microtask queue, which can be accessed</span><br><span class="line">  // via either native Promise.then or MutationObserver.</span><br><span class="line">  // MutationObserver has wider support, however it is seriously bugged in</span><br><span class="line">  // UIWebView in iOS &gt;= 9.3.3 when triggered in touch event handlers. It</span><br><span class="line">  // completely stops working after triggering a few times... so, if native</span><br><span class="line">  // Promise is available, we will use it:</span><br><span class="line">  /* istanbul ignore if */</span><br><span class="line">  if (typeof Promise !== &apos;undefined&apos; &amp;&amp; isNative(Promise)) &#123;</span><br><span class="line">    var p = Promise.resolve();</span><br><span class="line">    var logError = function (err) &#123; console.error(err); &#125;;</span><br><span class="line">    timerFunc = function () &#123;</span><br><span class="line">      p.then(nextTickHandler).catch(logError);</span><br><span class="line">      // in problematic UIWebViews, Promise.then doesn&apos;t completely break, but</span><br><span class="line">      // it can get stuck in a weird state where callbacks are pushed into the</span><br><span class="line">      // microtask queue but the queue isn&apos;t being flushed, until the browser</span><br><span class="line">      // needs to do some other work, e.g. handle a timer. Therefore we can</span><br><span class="line">      // &quot;force&quot; the microtask queue to be flushed by adding an empty timer.</span><br><span class="line">      if (isIOS) &#123; setTimeout(noop); &#125;</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125; else if (typeof MutationObserver !== &apos;undefined&apos; &amp;&amp; (</span><br><span class="line">    isNative(MutationObserver) ||</span><br><span class="line">    // PhantomJS and iOS 7.x</span><br><span class="line">    MutationObserver.toString() === &apos;[object MutationObserverConstructor]&apos;</span><br><span class="line">  )) &#123;</span><br><span class="line">    // use MutationObserver where native Promise is not available,</span><br><span class="line">    // e.g. PhantomJS IE11, iOS7, Android 4.4</span><br><span class="line">    var counter = 1;</span><br><span class="line">    var observer = new MutationObserver(nextTickHandler);</span><br><span class="line">    var textNode = document.createTextNode(String(counter));</span><br><span class="line">    observer.observe(textNode, &#123;</span><br><span class="line">      characterData: true</span><br><span class="line">    &#125;);</span><br><span class="line">    timerFunc = function () &#123;</span><br><span class="line">      counter = (counter + 1) % 2;</span><br><span class="line">      textNode.data = String(counter);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    // fallback to setTimeout</span><br><span class="line">    /* istanbul ignore next */</span><br><span class="line">    timerFunc = function () &#123;</span><br><span class="line">      setTimeout(nextTickHandler, 0);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  return function queueNextTick (cb, ctx) &#123;</span><br><span class="line">    var _resolve;</span><br><span class="line">    callbacks.push(function () &#123;</span><br><span class="line">      if (cb) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">          cb.call(ctx);</span><br><span class="line">        &#125; catch (e) &#123;</span><br><span class="line">          handleError(e, ctx, &apos;nextTick&apos;);</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; else if (_resolve) &#123;</span><br><span class="line">        _resolve(ctx);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">    if (!pending) &#123;</span><br><span class="line">      pending = true;</span><br><span class="line">      timerFunc();</span><br><span class="line">    &#125;</span><br><span class="line">    if (!cb &amp;&amp; typeof Promise !== &apos;undefined&apos;) &#123;</span><br><span class="line">      return new Promise(function (resolve, reject) &#123;</span><br><span class="line">        _resolve = resolve;</span><br><span class="line">      &#125;)</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;)();</span><br></pre></td></tr></table></figure></p>
+<p>nextTick方法采用了一个闭包，然后返回的函数为queueNextTick。如其名queueNextTick是一个NextTick队列，多次调用nextTick方法会放入队列中，然后按照顺序依次进入传入的回调函数。callbacks为回调函数的队列，dom更新完成后(如何确定的更新完成？)，依次执行。执行回调队列方法一共采用了3中方式：1、Promise  2、MutationObserver  3、setTimeout。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype._render = function () &#123;</span><br><span class="line">    var vm = this;</span><br><span class="line">    var ref = vm.$options;</span><br><span class="line">    var render = ref.render;</span><br><span class="line">    var staticRenderFns = ref.staticRenderFns;</span><br><span class="line">    var _parentVnode = ref._parentVnode;</span><br><span class="line"></span><br><span class="line">    if (vm._isMounted) &#123;</span><br><span class="line">      // clone slot nodes on re-renders</span><br><span class="line">      for (var key in vm.$slots) &#123;</span><br><span class="line">        vm.$slots[key] = cloneVNodes(vm.$slots[key]);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    vm.$scopedSlots = (_parentVnode &amp;&amp; _parentVnode.data.scopedSlots) || emptyObject;</span><br><span class="line"></span><br><span class="line">    if (staticRenderFns &amp;&amp; !vm._staticTrees) &#123;</span><br><span class="line">      vm._staticTrees = [];</span><br><span class="line">    &#125;</span><br><span class="line">    // set parent vnode. this allows render functions to have access</span><br><span class="line">    // to the data on the placeholder node.</span><br><span class="line">    vm.$vnode = _parentVnode;</span><br><span class="line">    // render self</span><br><span class="line">    var vnode;</span><br><span class="line">    try &#123;</span><br><span class="line">      vnode = render.call(vm._renderProxy, vm.$createElement);</span><br><span class="line">    &#125; catch (e) &#123;</span><br><span class="line">      handleError(e, vm, &quot;render function&quot;);</span><br><span class="line">      // return error render result,</span><br><span class="line">      // or previous vnode to prevent render error causing blank component</span><br><span class="line">      /* istanbul ignore else */</span><br><span class="line">      &#123;</span><br><span class="line">        vnode = vm.$options.renderError</span><br><span class="line">          ? vm.$options.renderError.call(vm._renderProxy, vm.$createElement, e)</span><br><span class="line">          : vm._vnode;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    // return empty vnode in case the render function errored out</span><br><span class="line">    if (!(vnode instanceof VNode)) &#123;</span><br><span class="line">      if (&quot;development&quot; !== &apos;production&apos; &amp;&amp; Array.isArray(vnode)) &#123;</span><br><span class="line">        warn(</span><br><span class="line">          &apos;Multiple root nodes returned from render function. Render function &apos; +</span><br><span class="line">          &apos;should return a single root node.&apos;,</span><br><span class="line">          vm</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">      vnode = createEmptyVNode();</span><br><span class="line">    &#125;</span><br><span class="line">    // set parent</span><br><span class="line">    vnode.parent = _parentVnode;</span><br><span class="line">    return vnode</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
+<p>_render方法为内部方法，主要是渲染vnode（虚拟节点）。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br></pre></td><td class="code"><pre><span class="line">var VNode = function VNode (</span><br><span class="line">  tag,</span><br><span class="line">  data,</span><br><span class="line">  children,</span><br><span class="line">  text,</span><br><span class="line">  elm,</span><br><span class="line">  context,</span><br><span class="line">  componentOptions</span><br><span class="line">) &#123;</span><br><span class="line">  this.tag = tag;</span><br><span class="line">  this.data = data;</span><br><span class="line">  this.children = children;</span><br><span class="line">  this.text = text;</span><br><span class="line">  this.elm = elm;</span><br><span class="line">  this.ns = undefined;</span><br><span class="line">  this.context = context;</span><br><span class="line">  this.functionalContext = undefined;</span><br><span class="line">  this.key = data &amp;&amp; data.key;</span><br><span class="line">  this.componentOptions = componentOptions;</span><br><span class="line">  this.componentInstance = undefined;</span><br><span class="line">  this.parent = undefined;</span><br><span class="line">  this.raw = false;</span><br><span class="line">  this.isStatic = false;</span><br><span class="line">  this.isRootInsert = true;</span><br><span class="line">  this.isComment = false;</span><br><span class="line">  this.isCloned = false;</span><br><span class="line">  this.isOnce = false;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>VNode的构造函数，传递了tag,data,children等参数，VNode构造函数的参数比较多，某些参数的作用如isStatic不是特别清楚。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype._o = markOnce;</span><br><span class="line">Vue.prototype._n = toNumber;</span><br><span class="line">Vue.prototype._s = toString;</span><br><span class="line">Vue.prototype._l = renderList;</span><br><span class="line">Vue.prototype._t = renderSlot;</span><br><span class="line">Vue.prototype._q = looseEqual;</span><br><span class="line">Vue.prototype._i = looseIndexOf;</span><br><span class="line">Vue.prototype._m = renderStatic;</span><br><span class="line">Vue.prototype._f = resolveFilter;</span><br><span class="line">Vue.prototype._k = checkKeyCodes;</span><br><span class="line">Vue.prototype._b = bindObjectProps;</span><br><span class="line">Vue.prototype._v = createTextVNode;</span><br><span class="line">Vue.prototype._e = createEmptyVNode;</span><br><span class="line">Vue.prototype._u = resolveScopedSlots;</span><br></pre></td></tr></table></figure></p>
+<p>vue的原型上添加了<code>_o、_n、_s</code> 等14个内部方法，源码的注释说明是render函数的一些帮助函数，都放在了vue的原型上。这个地方不是很理解的是为什么要采用单字母来命名方法，有什么特别的意义？</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/前端/">前端</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2017/09/06/web-vue-source-code-analysis-5/" data-title="Vue源码解析（五） | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/09/11/web-wechat-jssdk-openLocation/" title="微信jssdk调用地图(openLocation)小坑">
+  <strong>上一篇：</strong><br/>
+  <span>
+  微信jssdk调用地图(openLocation)小坑</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/09/05/web-vue-source-code-analysis-4/"  title="Vue源码解析（四）">
+ <strong>下一篇：</strong><br/> 
+ <span>Vue源码解析（四）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

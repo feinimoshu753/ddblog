@@ -1,0 +1,563 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>http、https、http/2学习 | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="在学习http、https、http/2之前，先整理一下OSI网络模型、TCP/IP协议、TCP和UDP等内容。">
+<meta name="keywords" content="前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="http、https、http&#x2F;2学习">
+<meta property="og:url" content="http://yoursite.com/2017/09/23/web-http-https-http2-learn/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="在学习http、https、http/2之前，先整理一下OSI网络模型、TCP/IP协议、TCP和UDP等内容。">
+<meta property="og:updated_time" content="2018-01-21T09:43:00.716Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="http、https、http&#x2F;2学习">
+<meta name="twitter:description" content="在学习http、https、http/2之前，先整理一下OSI网络模型、TCP/IP协议、TCP和UDP等内容。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/09/23/web-http-https-http2-learn/" title="http、https、http/2学习" itemprop="url">http、https、http/2学习</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2017-09-22T22:45:14.000Z" itemprop="datePublished"> Published 2017-09-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、简单回顾一下OSI七层网络模型"><span class="toc-number">1.</span> <span class="toc-text">一、简单回顾一下OSI七层网络模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、TCP-IP协议"><span class="toc-number">2.</span> <span class="toc-text">二、TCP/IP协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、TCP和UDP"><span class="toc-number">3.</span> <span class="toc-text">三、TCP和UDP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#TCP和UDP的简单对比"><span class="toc-number">3.1.</span> <span class="toc-text">TCP和UDP的简单对比:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、HTTP"><span class="toc-number">4.</span> <span class="toc-text">四、HTTP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#八种请求方法"><span class="toc-number">4.1.</span> <span class="toc-text">八种请求方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#http请求信息结构"><span class="toc-number">4.2.</span> <span class="toc-text">http请求信息结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#状态码"><span class="toc-number">4.3.</span> <span class="toc-text">状态码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、HTTPS"><span class="toc-number">5.</span> <span class="toc-text">五、HTTPS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#https特点"><span class="toc-number">5.1.</span> <span class="toc-text">https特点:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#六、SPDY"><span class="toc-number">6.</span> <span class="toc-text">六、SPDY</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#spdy的特点："><span class="toc-number">6.1.</span> <span class="toc-text">spdy的特点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#七、HTTP-2"><span class="toc-number">7.</span> <span class="toc-text">七、HTTP/2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#http-2的特点："><span class="toc-number">7.1.</span> <span class="toc-text">http/2的特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#http-2和spdy的区别"><span class="toc-number">7.2.</span> <span class="toc-text">http/2和spdy的区别:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参考文章"><span class="toc-number">7.3.</span> <span class="toc-text">参考文章</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>在学习http、https、http/2之前，先整理一下OSI网络模型、TCP/IP协议、TCP和UDP等内容。</p>
+<a id="more"></a>
+<h3 id="一、简单回顾一下OSI七层网络模型"><a href="#一、简单回顾一下OSI七层网络模型" class="headerlink" title="一、简单回顾一下OSI七层网络模型"></a>一、简单回顾一下OSI七层网络模型</h3><p>OSI是一个开放性的通信系统互连参考模型，是一个由国际标准化组织提出的的协议规范。模型由上往下是:</p>
+<ul>
+<li>应用层（OSI 的应用层协议包括文件的传输、访问及管理协议(FTAM) ,以及文件虚拟终端协议(VIP)和公用管理系统信息(CMIP)）</li>
+<li>表示层（表示层供多种功能用于应用层数据编码和转化,以确保以一个系统应用层发送的信息 可以被另一个系统应用层识别）</li>
+<li>会话层（会话层建立、管理和终止表示层与实体之间的通信会话）</li>
+<li>传输层（传输层向高层提供可靠的端到端的网络数据流服务）</li>
+<li>网络层（网络层负责在源和终点之间建立连接）</li>
+<li>数据链路层（数据链路层通过物理网络链路供数据传输。不同的数据链路层定义了不同的网络和协议特征,其中包括物理编址、网络拓扑结构、错误校验、数据帧序列以及流控）</li>
+<li>物理层（物理层负责最后将信息编码成电流脉冲或其它信号用于网上传输）</li>
+</ul>
+<h3 id="二、TCP-IP协议"><a href="#二、TCP-IP协议" class="headerlink" title="二、TCP/IP协议"></a>二、TCP/IP协议</h3><p>TCP/IP协议整合了TCP和IP等多种协议，处理计算机与网络之间的传输，它参考和整合了OSI网络模型。常见的的TCP/IP协议分为四层，由上往下是:</p>
+<ul>
+<li>应用层（应用层对应于 OSI 七层参考模型的应用层和表示层）</li>
+<li>传输层（传输层对应于 OSI 七层参考模型的传输层,它供两种端到端的通信服务）</li>
+<li>网间层（本层包含 IP 协议、RIP 协议(Routing Information Protocol,路由信息协议),负责数据的包装、寻址和路由。同时还包含网间控制报文协议(Internet Control Message Protocol,ICMP)用来供网络诊断信息）</li>
+<li>网络接口层（网络接口层包括用于协作IP数据在已有网络介质上传输的协议）</li>
+</ul>
+<h3 id="三、TCP和UDP"><a href="#三、TCP和UDP" class="headerlink" title="三、TCP和UDP"></a>三、TCP和UDP</h3><p>TCP（Transmission Control Protocol、传输控制协议）<br>是一种面向连接的、可靠的、基于字节流的传输层通信协议。UDP（User Datagram Protocol、用户数据报协议）是一个简单的面向数据报的传输层协议。他们负责OSI网络模型中传输层的处理。</p>
+<h4 id="TCP和UDP的简单对比"><a href="#TCP和UDP的简单对比" class="headerlink" title="TCP和UDP的简单对比:"></a><strong>TCP和UDP的简单对比:</strong></h4><table>
+<thead>
+<tr>
+<th style="text-align:center">TCP</th>
+<th style="text-align:center">UDP</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align:center">面向连接（三次握手、四次挥手）</td>
+<td style="text-align:center">无连接</td>
+</tr>
+<tr>
+<td style="text-align:center">资源占用较多</td>
+<td style="text-align:center">资源占用减少</td>
+</tr>
+<tr>
+<td style="text-align:center">保证数据顺序</td>
+<td style="text-align:center">数据无顺序</td>
+</tr>
+<tr>
+<td style="text-align:center">传输速度较慢</td>
+<td style="text-align:center">传输速度快</td>
+</tr>
+<tr>
+<td style="text-align:center">保证数据正确性</td>
+<td style="text-align:center">容易丢包</td>
+</tr>
+<tr>
+<td style="text-align:center">流模式</td>
+<td style="text-align:center">报文模式</td>
+</tr>
+</tbody>
+</table>
+<h3 id="四、HTTP"><a href="#四、HTTP" class="headerlink" title="四、HTTP"></a>四、HTTP</h3><p>http(超文本传输协议)是一种常用于应用层的协议，它是基于文本传输内容。</p>
+<h4 id="八种请求方法"><a href="#八种请求方法" class="headerlink" title="八种请求方法"></a>八种请求方法</h4><p>get、post、head、put、delete、trace、options、connect。</p>
+<h4 id="http请求信息结构"><a href="#http请求信息结构" class="headerlink" title="http请求信息结构"></a>http请求信息结构</h4><ul>
+<li>请求行</li>
+<li>请求头</li>
+<li>空行</li>
+<li>其他消息</li>
+</ul>
+<h4 id="状态码"><a href="#状态码" class="headerlink" title="状态码"></a>状态码</h4><ul>
+<li>1xx消息——请求已被服务器接收，继续处理</li>
+<li>2xx成功——请求已成功被服务器接收、理解、并接受</li>
+<li>3xx重定向——需要后续操作才能完成这一请求</li>
+<li>4xx请求错误——请求含有词法错误或者无法被执行</li>
+<li>5xx服务器错误——服务器在处理某个正确请求时发生错误</li>
+</ul>
+<p>常见状态码200（请求成功）、302（重定向到些的url）、304（读取缓存）、404（没有找到文件或目录）、405（请求指定的方法错误）、500（服务器错误）、502（服务器无效响应）</p>
+<h3 id="五、HTTPS"><a href="#五、HTTPS" class="headerlink" title="五、HTTPS"></a>五、HTTPS</h3><p>https可以称为http安全版，主要是http下增加了SSL(安全套接层)或者TSL(传输层安全)，在SSL或TSL在传输层对数据进行了加密处理。</p>
+<h4 id="https特点"><a href="#https特点" class="headerlink" title="https特点:"></a>https特点:</h4><ul>
+<li>1、保证传输信息安全（经过加密）</li>
+<li>2、需要申请证书</li>
+<li>3、可以防止运营商劫持</li>
+<li>4、由于增加了安全层，所以访问速度有所减慢</li>
+<li>5、http网站可以访问https链接，https网站无法访问http链接（除了部分支持mixed-content的浏览器）</li>
+</ul>
+<h3 id="六、SPDY"><a href="#六、SPDY" class="headerlink" title="六、SPDY"></a>六、SPDY</h3><p>spdy是谷歌开放开放的网络传输协议，它位于http和ssl层之间，可以加快访问速度。</p>
+<h4 id="spdy的特点："><a href="#spdy的特点：" class="headerlink" title="spdy的特点："></a>spdy的特点：</h4><ul>
+<li>1、可以降低延迟</li>
+<li>2、可以设置请求优先级</li>
+<li>3、header压缩</li>
+<li>4、基于https保障传输安全</li>
+<li>5、支持server push</li>
+</ul>
+<h3 id="七、HTTP-2"><a href="#七、HTTP-2" class="headerlink" title="七、HTTP/2"></a>七、HTTP/2</h3><p>http/2（超文本传输协议第二版），他对http进行了一些升级改造，也参考了spdy相关的内容(可以称为spdy的演化版本)。</p>
+<h4 id="http-2的特点："><a href="#http-2的特点：" class="headerlink" title="http/2的特点："></a>http/2的特点：</h4><ul>
+<li>新的二进制格式</li>
+<li>多路复用</li>
+<li>header压缩</li>
+<li>支持server push</li>
+</ul>
+<h4 id="http-2和spdy的区别"><a href="#http-2和spdy的区别" class="headerlink" title="http/2和spdy的区别:"></a>http/2和spdy的区别:</h4><ul>
+<li>http/2支持http传输、spdy只支持https</li>
+<li>http/2和spdy的header压缩算法不同</li>
+</ul>
+<h4 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h4><p><a href="https://zhuanlan.zhihu.com/p/24860273" target="_blank" rel="noopener">TCP和UDP的区别</a><br><a href="http://www.alloyteam.com/2016/07/httphttp2-0spdyhttps-reading-this-is-enough/" target="_blank" rel="noopener">HTTP,HTTP2.0,SPDY,HTTPS你应该知道的一些事</a><br><a href="http://www.jianshu.com/p/4b9d43c0571a" target="_blank" rel="noopener">深入浅出－网络七层模型&amp;&amp;网络数据包
+</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/前端/">前端</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2017/09/23/web-http-https-http2-learn/" data-title="http、https、http/2学习 | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/09/25/web-performance-optimization/" title="前端跨域问题">
+  <strong>上一篇：</strong><br/>
+  <span>
+  前端跨域问题</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/09/20/web-object-construct-proptype/"  title="对象、构造函数、原型">
+ <strong>下一篇：</strong><br/> 
+ <span>对象、构造函数、原型
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、简单回顾一下OSI七层网络模型"><span class="toc-number">1.</span> <span class="toc-text">一、简单回顾一下OSI七层网络模型</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、TCP-IP协议"><span class="toc-number">2.</span> <span class="toc-text">二、TCP/IP协议</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、TCP和UDP"><span class="toc-number">3.</span> <span class="toc-text">三、TCP和UDP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#TCP和UDP的简单对比"><span class="toc-number">3.1.</span> <span class="toc-text">TCP和UDP的简单对比:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、HTTP"><span class="toc-number">4.</span> <span class="toc-text">四、HTTP</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#八种请求方法"><span class="toc-number">4.1.</span> <span class="toc-text">八种请求方法</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#http请求信息结构"><span class="toc-number">4.2.</span> <span class="toc-text">http请求信息结构</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#状态码"><span class="toc-number">4.3.</span> <span class="toc-text">状态码</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、HTTPS"><span class="toc-number">5.</span> <span class="toc-text">五、HTTPS</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#https特点"><span class="toc-number">5.1.</span> <span class="toc-text">https特点:</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#六、SPDY"><span class="toc-number">6.</span> <span class="toc-text">六、SPDY</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#spdy的特点："><span class="toc-number">6.1.</span> <span class="toc-text">spdy的特点：</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#七、HTTP-2"><span class="toc-number">7.</span> <span class="toc-text">七、HTTP/2</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#http-2的特点："><span class="toc-number">7.1.</span> <span class="toc-text">http/2的特点：</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#http-2和spdy的区别"><span class="toc-number">7.2.</span> <span class="toc-text">http/2和spdy的区别:</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#参考文章"><span class="toc-number">7.3.</span> <span class="toc-text">参考文章</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

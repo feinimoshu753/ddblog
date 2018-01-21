@@ -1,0 +1,471 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Vue源码解析（三） | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="接下来调用eventsMixin方法，看名称就知道是关于事件相关的，主要是在Vue的原型上加入$on,$once,$off,$emit方法。">
+<meta name="keywords" content="前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue源码解析（三）">
+<meta property="og:url" content="http://yoursite.com/2017/09/04/web-vue-source-code-analysis-3/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="接下来调用eventsMixin方法，看名称就知道是关于事件相关的，主要是在Vue的原型上加入$on,$once,$off,$emit方法。">
+<meta property="og:updated_time" content="2018-01-21T09:55:10.515Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue源码解析（三）">
+<meta name="twitter:description" content="接下来调用eventsMixin方法，看名称就知道是关于事件相关的，主要是在Vue的原型上加入$on,$once,$off,$emit方法。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/09/04/web-vue-source-code-analysis-3/" title="Vue源码解析（三）" itemprop="url">Vue源码解析（三）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2017-09-04T14:24:13.000Z" itemprop="datePublished"> Published 2017-09-04</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			
+		
+		</div>
+		
+		<p>接下来调用eventsMixin方法，看名称就知道是关于事件相关的，主要是在Vue的原型上加入<code>$on,$once,$off,$emit</code>方法。</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype.$on = function (event, fn) &#123;</span><br><span class="line">    var this$1 = this;</span><br><span class="line"></span><br><span class="line">    var vm = this;</span><br><span class="line">    if (Array.isArray(event)) &#123;</span><br><span class="line">      for (var i = 0, l = event.length; i &lt; l; i++) &#123;</span><br><span class="line">        this$1.$on(event[i], fn);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      (vm._events[event] || (vm._events[event] = [])).push(fn);</span><br><span class="line">      // optimize hook:event cost by using a boolean flag marked at registration</span><br><span class="line">      // instead of a hash lookup</span><br><span class="line">      if (hookRE.test(event)) &#123;</span><br><span class="line">        vm._hasHookEvent = true;</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return vm</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure>
+<p><code>$on</code>方法为监听自定义事件，如果event为数组，则遍历event数组进行监听。如果为字符串则放入vm._events数组中。这块还进行了一个事件是否为Hook的正则判断，暂未搞清楚具体作用。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype.$off = function (event, fn) &#123;</span><br><span class="line">    var this$1 = this;</span><br><span class="line"></span><br><span class="line">    var vm = this;</span><br><span class="line">    // all</span><br><span class="line">    if (!arguments.length) &#123;</span><br><span class="line">      vm._events = Object.create(null);</span><br><span class="line">      return vm</span><br><span class="line">    &#125;</span><br><span class="line">    // array of events</span><br><span class="line">    if (Array.isArray(event)) &#123;</span><br><span class="line">      for (var i$1 = 0, l = event.length; i$1 &lt; l; i$1++) &#123;</span><br><span class="line">        this$1.$off(event[i$1], fn);</span><br><span class="line">      &#125;</span><br><span class="line">      return vm</span><br><span class="line">    &#125;</span><br><span class="line">    // specific event</span><br><span class="line">    var cbs = vm._events[event];</span><br><span class="line">    if (!cbs) &#123;</span><br><span class="line">      return vm</span><br><span class="line">    &#125;</span><br><span class="line">    if (arguments.length === 1) &#123;</span><br><span class="line">      vm._events[event] = null;</span><br><span class="line">      return vm</span><br><span class="line">    &#125;</span><br><span class="line">    // specific handler</span><br><span class="line">    var cb;</span><br><span class="line">    var i = cbs.length;</span><br><span class="line">    while (i--) &#123;</span><br><span class="line">      cb = cbs[i];</span><br><span class="line">      if (cb === fn || cb.fn === fn) &#123;</span><br><span class="line">        cbs.splice(i, 1);</span><br><span class="line">        break</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return vm</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>$off</code>方法为解除已绑定的事件，如果off方法不传任何参数，删除所有绑定事件。如果event为数组，则循环解除数组内的事件。如果为字符串，事件数组不存在则直接返回；如果不需要回调，则将相关事件数组设为null。如果该事件数组有存在，则遍历事件数组，并从数组中删除符合条件的事件。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype.$once = function (event, fn) &#123;</span><br><span class="line">    var vm = this;</span><br><span class="line">    function on () &#123;</span><br><span class="line">      vm.$off(event, on);</span><br><span class="line">      fn.apply(vm, arguments);</span><br><span class="line">    &#125;</span><br><span class="line">    on.fn = fn;</span><br><span class="line">    vm.$on(event, on);</span><br><span class="line">    return vm</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>$once</code>方法为绑定仅响应一次事件，响应结束后立即解除绑定。主要是调用了<code>$on</code>方法，同时回调时调用<code>$off方法</code>解除该事件，并再解除事件后进行回调。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br></pre></td><td class="code"><pre><span class="line">Vue.prototype.$emit = function (event) &#123;</span><br><span class="line">    var vm = this;</span><br><span class="line">    &#123;</span><br><span class="line">      var lowerCaseEvent = event.toLowerCase();</span><br><span class="line">      if (lowerCaseEvent !== event &amp;&amp; vm._events[lowerCaseEvent]) &#123;</span><br><span class="line">        tip(</span><br><span class="line">          &quot;Event \&quot;&quot; + lowerCaseEvent + &quot;\&quot; is emitted in component &quot; +</span><br><span class="line">          (formatComponentName(vm)) + &quot; but the handler is registered for \&quot;&quot; + event + &quot;\&quot;. &quot; +</span><br><span class="line">          &quot;Note that HTML attributes are case-insensitive and you cannot use &quot; +</span><br><span class="line">          &quot;v-on to listen to camelCase events when using in-DOM templates. &quot; +</span><br><span class="line">          &quot;You should probably use \&quot;&quot; + (hyphenate(event)) + &quot;\&quot; instead of \&quot;&quot; + event + &quot;\&quot;.&quot;</span><br><span class="line">        );</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    var cbs = vm._events[event];</span><br><span class="line">    if (cbs) &#123;</span><br><span class="line">      cbs = cbs.length &gt; 1 ? toArray(cbs) : cbs;</span><br><span class="line">      var args = toArray(arguments, 1);</span><br><span class="line">      for (var i = 0, l = cbs.length; i &lt; l; i++) &#123;</span><br><span class="line">        cbs[i].apply(vm, args);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">    return vm</span><br><span class="line">  &#125;;</span><br></pre></td></tr></table></figure></p>
+<p><code>$emit</code>方法为事件下发的方法，首先进行了一个大小写的判断，如果注册事件和下发事件的大小写不一致，则发出警告。如果该事件数组存在，则遍历事件数组进行注册回调，同时使用apply方法传递调用时参数。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/前端/">前端</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2017/09/04/web-vue-source-code-analysis-3/" data-title="Vue源码解析（三） | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/09/05/web-vue-source-code-analysis-4/" title="Vue源码解析（四）">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Vue源码解析（四）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/09/03/web-vue-source-code-analysis-2/"  title="Vue源码解析（二）">
+ <strong>下一篇：</strong><br/> 
+ <span>Vue源码解析（二）
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

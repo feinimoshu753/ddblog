@@ -1,0 +1,895 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>【android】拼图实现浅谈（类似美图秀秀拼图功能) | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="又好久没有写东西。本来这个东西在两个月之前就该记录下来的，拖了那么久，醉过醉过。 今天介绍的是android实现一个基础的拼图功能。之前项目中需要到拼图的功能，首先就是第一反应就是geogle有没有可以使用的控件，但是查了半天，没有找到一个合适的。没有的话就只有自己动手了。好了，废话不说了，现在开始进入正题。">
+<meta name="keywords" content="android">
+<meta property="og:type" content="article">
+<meta property="og:title" content="【android】拼图实现浅谈（类似美图秀秀拼图功能)">
+<meta property="og:url" content="http://yoursite.com/2016/02/28/android-puzzle-img/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="又好久没有写东西。本来这个东西在两个月之前就该记录下来的，拖了那么久，醉过醉过。 今天介绍的是android实现一个基础的拼图功能。之前项目中需要到拼图的功能，首先就是第一反应就是geogle有没有可以使用的控件，但是查了半天，没有找到一个合适的。没有的话就只有自己动手了。好了，废话不说了，现在开始进入正题。">
+<meta property="og:updated_time" content="2018-01-21T09:43:00.732Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="【android】拼图实现浅谈（类似美图秀秀拼图功能)">
+<meta name="twitter:description" content="又好久没有写东西。本来这个东西在两个月之前就该记录下来的，拖了那么久，醉过醉过。 今天介绍的是android实现一个基础的拼图功能。之前项目中需要到拼图的功能，首先就是第一反应就是geogle有没有可以使用的控件，但是查了半天，没有找到一个合适的。没有的话就只有自己动手了。好了，废话不说了，现在开始进入正题。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2016/02/28/android-puzzle-img/" title="【android】拼图实现浅谈（类似美图秀秀拼图功能)" itemprop="url">【android】拼图实现浅谈（类似美图秀秀拼图功能)</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2016-02-28T10:14:55.000Z" itemprop="datePublished"> Published 2016-02-28</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			
+		
+		</div>
+		
+		<p>又好久没有写东西。本来这个东西在两个月之前就该记录下来的，拖了那么久，醉过醉过。</p>
+<p>今天介绍的是android实现一个基础的拼图功能。之前项目中需要到拼图的功能，首先就是第一反应就是geogle有没有可以使用的控件，但是查了半天，没有找到一个合适的。没有的话就只有自己动手了。好了，废话不说了，现在开始进入正题。</p>
+<a id="more"></a>
+<p>实现思路：</p>
+<p>1、将拼图界面的每个小块用坐标记录下来，用Json格式存储在FIle中。</p>
+<p>2、拼图绘制之前把数据从文件中读取放入list。</p>
+<p>3、用canvas和paint根据坐标绘制出效果</p>
+<p>4、在onTouchEvent中处理各图片拖动</p>
+<p>储存坐标：</p>
+<p>把拼图背景区域的左上角坐标设为（0，0）,其他点坐标进行计算。（代码中的坐标都是用dp进行表示的，不是px），下面贴上代码。</p>
+<pre><code>{
+  &quot;style&quot;: [
+    {
+      &quot;pic&quot;: [
+        {
+          &quot;coordinates&quot;: [
+            {
+              &quot;x&quot;: 0,
+              &quot;y&quot;: 0
+            },
+            {
+              &quot;x&quot;: 320,
+              &quot;y&quot;: 0
+            },
+            {
+              &quot;x&quot;: 320,
+              &quot;y&quot;: 225
+            },
+            {
+              &quot;x&quot;: 0,
+              &quot;y&quot;: 225
+            }
+          ]
+        },
+        {
+          &quot;coordinates&quot;: [
+            {
+              &quot;x&quot;: 0,
+              &quot;y&quot;: 230
+            },
+            {
+              &quot;x&quot;: 320,
+              &quot;y&quot;: 230
+            },
+            {
+              &quot;x&quot;: 320,
+              &quot;y&quot;: 450
+            },
+            {
+              &quot;x&quot;: 0,
+              &quot;y&quot;: 450
+            }
+          ]
+        }
+      ]
+    },
+    {
+      &quot;pic&quot;: [
+        {
+          &quot;coordinates&quot;: [
+            {
+              &quot;x&quot;: 0,
+              &quot;y&quot;: 0
+            },
+            {
+              &quot;x&quot;: 320,
+              &quot;y&quot;: 0
+            },
+            {
+              &quot;x&quot;: 320,
+              &quot;y&quot;: 165
+            },
+            {
+              &quot;x&quot;: 0,
+              &quot;y&quot;: 165
+            }
+          ]
+        },
+        {
+          &quot;coordinates&quot;: [
+            {
+              &quot;x&quot;: 0,
+              &quot;y&quot;: 170
+            },
+            {
+              &quot;x&quot;: 320,
+              &quot;y&quot;: 170
+            },
+            {
+              &quot;x&quot;: 320,
+              &quot;y&quot;: 450
+            },
+            {
+              &quot;x&quot;: 0,
+              &quot;y&quot;: 450
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
+</code></pre><p>数据读取：</p>
+<p>文件是放在assets文件夹中，通过getAssets方法，然后读取文件内容。下面贴上代码。</p>
+<pre><code>//读取模板路径文件
+   public String readAsset(String fileName) {
+       AssetManager am = context.getAssets();
+
+       String data = &quot;&quot;;
+
+       InputStream is = null;
+       try {
+           is = am.open(fileName);
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+       data = readDataFromInputStream(is);
+       try {
+           if (is != null) {
+               is.close();
+           }
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+
+       return data;
+   }
+
+   private String readDataFromInputStream(InputStream is) {
+       BufferedInputStream bis = new BufferedInputStream(is);
+
+       String str = &quot;&quot;, s = &quot;&quot;;
+
+       int c = 0;
+       byte[] buf = new byte[1024];
+       while (true) {
+           try {
+               c = bis.read(buf);
+           } catch (IOException e) {
+               e.printStackTrace();
+           }
+
+           if (c == -1)
+               break;
+           else {
+               try {
+                   s = new String(buf, 0, c, &quot;UTF-8&quot;);
+               } catch (UnsupportedEncodingException e) {
+                   e.printStackTrace();
+               }
+               str += s;
+           }
+       }
+
+       try {
+           bis.close();
+       } catch (IOException e) {
+           e.printStackTrace();
+       }
+
+       return str;
+   }
+</code></pre><p>绘制图片：</p>
+<p>主要用到了android的相关绘图知识，不太熟悉的同学可以先去了解了解。主要方式就是将拼图每块通过path按照给定的坐标进行图案的基本绘制，然后通过canvas的drawBitmap方法将图片绘制上去，形成各部分的形状。</p>
+<pre><code>private void initPath() {
+       path = new Path[pathNum];
+       for (int i = 0; i &lt; pathNum; i++) {
+           path[i] = new Path();
+       }
+       bitmapsFlag = new boolean[pathNum];
+
+       pathOffset = new float[pathNum][2];
+       for (int i = 0; i &lt; pathNum; i++) {
+           bitmapsFlag[i] = false;
+                   pathOffset[i][0] = 0f;
+           pathOffset[i][1] = 0f;
+       }
+
+       for (int i = 0; i &lt; pathNum; i++) {
+           for (int j = 0; j &lt; coordinateSetList.get(i).getCoordinates().size(); j++) {
+               float x = coordinateSetList.get(i).getCoordinates().get(j).getX();
+               float y = coordinateSetList.get(i).getCoordinates().get(j).getY();
+               if (j == 0) {
+                   path[i].moveTo(dp2px(x), dp2px(y));
+               } else {
+                   path[i].lineTo(dp2px(x), dp2px(y));
+               }
+           }
+           path[i].close();
+       }
+
+       // get bitmap
+       bitmaps = new Bitmap[pathNum];
+       for (int i = 0; i &lt; pathNum; i++) {
+           BitmapFactory.Options opt = new BitmapFactory.Options();
+           opt.inJustDecodeBounds = true;
+           BitmapFactory.decodeFile(pics.get(i).path, opt);
+
+           int bmpWdh = opt.outWidth;
+           int bmpHgt = opt.outHeight;
+
+           Coordinates coordinate = caculateViewSize(coordinateSetList.get(i).getCoordinates());
+           int size = caculateSampleSize(bmpWdh, bmpHgt, dp2px(coordinate.getX()), dp2px(coordinate.getY()));
+           opt.inJustDecodeBounds = false;
+           opt.inSampleSize = size;
+
+           bitmaps[i] = scaleImage(BitmapFactory.decodeFile(pics.get(i).path, opt), dp2px(coordinate.getX()), dp2px(coordinate.getY()));
+       }
+   }
+
+   private Coordinates caculateViewSize(List&lt;Coordinates&gt; list) {
+
+       float viewWidth;
+       float viewHeight;
+
+       viewWidth = caculateMaxCoordinateX(list) - caculateMinCoordinateX(list);
+       viewHeight = caculateMaxCoordinateY(list) - caculateMinCoordinateY(list);
+
+       return new Coordinates(viewWidth, viewHeight);
+   }
+
+
+   private int caculateSampleSize(int picWdh, int picHgt, int showWdh,
+                                  int showHgt) {
+       // 如果此时显示区域比图片大，直接返回
+       if ((showWdh &lt; picWdh) &amp;&amp; (showHgt &lt; picHgt)) {
+           int wdhSample = picWdh / showWdh;
+           int hgtSample = picHgt / showHgt;
+           // 利用小的来处理
+           int sample = wdhSample &gt; hgtSample ? hgtSample : wdhSample;
+           int minSample = 2;
+           while (sample &gt; minSample) {
+               minSample *= 2;
+           }
+           return minSample &gt;&gt; 1;
+       } else {
+           return 0;
+       }
+   }
+
+   private float caculateMinCoordinateX(List&lt;Coordinates&gt; list) {
+
+       float minX;
+       minX = list.get(0).getX();
+       for (int i = 1; i &lt; list.size(); i++) {
+           if (list.get(i).getX() &lt; minX) {
+               minX = list.get(i).getX();
+           }
+       }
+       return minX;
+   }
+
+   private float caculateMaxCoordinateX(List&lt;Coordinates&gt; list) {
+
+       float maxX;
+       maxX = list.get(0).getX();
+       for (int i = 1; i &lt; list.size(); i++) {
+           if (list.get(i).getX() &gt; maxX) {
+               maxX = list.get(i).getX();
+           }
+       }
+       return maxX;
+   }
+
+   private float caculateMinCoordinateY(List&lt;Coordinates&gt; list) {
+
+       float minY;
+       minY = list.get(0).getY();
+       for (int i = 1; i &lt; list.size(); i++) {
+           if (list.get(i).getY() &lt; minY) {
+               minY = list.get(i).getY();
+           }
+       }
+       return minY;
+   }
+
+   private float caculateMaxCoordinateY(List&lt;Coordinates&gt; list) {
+
+       float maxY;
+       maxY = list.get(0).getY();
+       for (int i = 1; i &lt; list.size(); i++) {
+           if (list.get(i).getY() &gt; maxY) {
+               maxY = list.get(i).getY();
+           }
+       }
+       return maxY;
+   }
+
+   //图片缩放
+   private static Bitmap scaleImage(Bitmap bm, int newWidth, int newHeight) {
+       if (bm == null) {
+           return null;
+       }
+       int width = bm.getWidth();
+       int height = bm.getHeight();
+       float scaleWidth = ((float) newWidth) / width;
+       float scaleHeight = ((float) newHeight) / height;
+       float scale = 1;
+       if (scaleWidth &gt;= scaleHeight) {
+           scale = scaleWidth;
+       } else {
+           scale = scaleHeight;
+       }
+       Matrix matrix = new Matrix();
+       matrix.postScale(scale, scale);
+       Bitmap newbm = Bitmap.createBitmap(bm, 0, 0, width, height, matrix,
+               true);
+       return newbm;
+   }
+
+   @Override
+   protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+       // TODO Auto-generated method stub
+       super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+       setMeasuredDimension(viewWdh, viewHgt);
+   }
+
+   @Override
+   protected void onDraw(Canvas canvas) {
+       super.onDraw(canvas);
+       canvas.drawColor(Color.TRANSPARENT);// 显示背景颜色
+       Paint paint = new Paint();
+       paint.setAntiAlias(true);
+       paint.setColor(Color.WHITE);
+       startDraw(canvas, paint);
+   }
+
+
+   private void startDraw(Canvas canvas, Paint paint) {
+       for (int i = 0; i &lt; pathNum; i++) {
+           canvas.save();
+           drawScene(canvas, paint, i);
+           canvas.restore();
+       }
+   }
+
+   private void drawScene(Canvas canvas, Paint paint, int idx) {
+       canvas.clipPath(path[idx]);
+       canvas.drawColor(Color.GRAY);
+       if (bitmapsFlag[idx]) {
+           canvas.drawBitmap(bitmaps[idx], dp2px(caculateMinCoordinateX(coordinateSetList.get(idx).getCoordinates())) + pathOffsetX + pathOffset[idx][0],
+                   dp2px(caculateMinCoordinateY(coordinateSetList.get(idx).getCoordinates())) + pathOffsetY + pathOffset[idx][1], paint);
+       } else {
+           canvas.drawBitmap(bitmaps[idx], dp2px(caculateMinCoordinateX(coordinateSetList.get(idx).getCoordinates())) + pathOffset[idx][0],
+                   dp2px(caculateMinCoordinateY(coordinateSetList.get(idx).getCoordinates())) + pathOffset[idx][1], paint);
+       }
+   }
+</code></pre><p>事件处理：</p>
+<p>这里只处理各部分的移动事件，放大图片和交换图片位置就要大家自己去实现了。处理移动的第一部分就是判断手指落下的地方是属于哪个区域，主要是通过Region中的contains方法去判断落点。第二个部分就是处理图片移动超过图片大小的情况，通过pathOffset这个数组来记录移动的距离，如果超过图片大小，就回到图片最大宽度的范围。</p>
+<pre><code>float ptx, pty;
+float pathOffsetX, pathOffsetY;
+
+@Override
+public boolean onTouchEvent(MotionEvent event) {
+    switch (event.getAction()) {
+        case MotionEvent.ACTION_DOWN:
+            for (int i = 0; i &lt; pathNum; i++) {
+                bitmapsFlag[i] = false;
+            }
+            ptx = event.getRawX() - dp2px(leftMargin);
+            pty = event.getRawY() - dp2px(MARGIN_HEIGHT);
+            pathOffsetX = 0;
+            pathOffsetY = 0;
+            int cflag = 0;
+            for (cflag = 0; cflag &lt; pathNum; cflag++) {
+                if (contains(path[cflag], ptx, pty)) {
+                    bitmapsFlag[cflag] = true;
+                    break;
+                }
+            }
+            break;
+        case MotionEvent.ACTION_MOVE:
+            pathOffsetX = event.getRawX() - dp2px(leftMargin) - ptx;
+            pathOffsetY = event.getRawY() - dp2px(MARGIN_HEIGHT) - pty;
+            invalidate();
+            break;
+        case MotionEvent.ACTION_POINTER_DOWN:
+            break;
+        case MotionEvent.ACTION_UP:
+            for (int i = 0; i &lt; pathNum; i++) {
+                if (bitmapsFlag[i]) {
+                    pathOffset[i][0] += event.getRawX() - dp2px(leftMargin) - ptx;
+                    pathOffset[i][1] += event.getRawY() - dp2px(MARGIN_HEIGHT) - pty;
+
+                    if (pathOffset[i][0] &gt; 0) {
+                        pathOffset[i][0] = 0;
+                    }
+                    if (pathOffset[i][0] &lt; -(bitmaps[i].getWidth() - getViewWidth(coordinateSetList.get(i).getCoordinates()))) {
+                        pathOffset[i][0] = -(bitmaps[i].getWidth() - getViewWidth(coordinateSetList.get(i).getCoordinates()));
+                    }
+                    if (pathOffset[i][1] &gt; 0) {
+                        pathOffset[i][1] = 0;
+                    }
+                    if (pathOffset[i][1] &lt; -(bitmaps[i].getHeight() - getViewHeight(coordinateSetList.get(i).getCoordinates()))) {
+                        pathOffset[i][1] = -(bitmaps[i].getHeight() - getViewHeight(coordinateSetList.get(i).getCoordinates()));
+                    }
+                    bitmapsFlag[i] = false;
+                    break;
+                }
+            }
+            invalidate();
+            break;
+        default:
+            break;
+    }
+
+    return true;
+}
+
+private boolean contains(Path parapath, float pointx, float pointy) {
+    RectF localRectF = new RectF();
+    parapath.computeBounds(localRectF, true);
+    Region localRegion = new Region();
+    localRegion.setPath(parapath, new Region((int) localRectF.left,
+            (int) localRectF.top, (int) localRectF.right,
+            (int) localRectF.bottom));
+    return localRegion.contains((int) pointx, (int) pointy);
+}
+
+private float getViewWidth(List&lt;Coordinates&gt; list) {
+
+    return dp2px(caculateMaxCoordinateX(list) - caculateMinCoordinateX(list));
+}
+
+private float getViewHeight(List&lt;Coordinates&gt; list) {
+
+    return dp2px(caculateMaxCoordinateY(list) - caculateMinCoordinateY(list));
+}
+</code></pre><p>拼图的形状不局限于长方形，多边形都是可以的，坐标计算正确就成。目前这个拼图功能比较简陋，只实现了一些最基础的功能，大家如果需要更多功能，就要自己去实现啦，也可以留言，大家多多交流。</p>
+<p>ps:转载请注明出处哦。</p>
+<p>附上项目的github地址:<a href="https://github.com/feinimoshu753/puzzleview-android" target="_blank" rel="noopener">https://github.com/feinimoshu753/puzzleview-android</a></p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/android/">android</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2016/02/28/android-puzzle-img/" data-title="【android】拼图实现浅谈（类似美图秀秀拼图功能) | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2016/08/07/web-sui-mobile/" title="【sui-mobile踩坑之旅】实现横向滚动列表">
+  <strong>上一篇：</strong><br/>
+  <span>
+  【sui-mobile踩坑之旅】实现横向滚动列表</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2015/12/16/android-ImageViewGroup/"  title="【android】第一个简单的轮子(多图展示控件--ImageViewGroup)">
+ <strong>下一篇：</strong><br/> 
+ <span>【android】第一个简单的轮子(多图展示控件--ImageViewGroup)
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,505 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>js数组常见使用整理 | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="数组是js中最常见的数据结构，同时js的数组功能十分强大，本次整理经常使用的一些数组方法，同时实现两个简单的功能。">
+<meta name="keywords" content="前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="js数组常见使用整理">
+<meta property="og:url" content="http://yoursite.com/2017/10/01/web-js-array-way-neaten/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="数组是js中最常见的数据结构，同时js的数组功能十分强大，本次整理经常使用的一些数组方法，同时实现两个简单的功能。">
+<meta property="og:updated_time" content="2018-01-21T09:43:00.656Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="js数组常见使用整理">
+<meta name="twitter:description" content="数组是js中最常见的数据结构，同时js的数组功能十分强大，本次整理经常使用的一些数组方法，同时实现两个简单的功能。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/10/01/web-js-array-way-neaten/" title="js数组常见使用整理" itemprop="url">js数组常见使用整理</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2017-09-30T23:47:34.000Z" itemprop="datePublished"> Published 2017-10-01</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见方法"><span class="toc-number">1.</span> <span class="toc-text">常见方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、Array-isArray"><span class="toc-number">1.1.</span> <span class="toc-text">1、Array.isArray()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、concat"><span class="toc-number">1.2.</span> <span class="toc-text">2、concat()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、every"><span class="toc-number">1.3.</span> <span class="toc-text">3、every()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、filter"><span class="toc-number">1.4.</span> <span class="toc-text">4、filter()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5、forEach"><span class="toc-number">1.5.</span> <span class="toc-text">5、forEach()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6、indexOf"><span class="toc-number">1.6.</span> <span class="toc-text">6、indexOf()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7、join"><span class="toc-number">1.7.</span> <span class="toc-text">7、join()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8、lastIndexOf"><span class="toc-number">1.8.</span> <span class="toc-text">8、lastIndexOf()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9、map"><span class="toc-number">1.9.</span> <span class="toc-text">9、map()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10、pop"><span class="toc-number">1.10.</span> <span class="toc-text">10、pop()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#11、push"><span class="toc-number">1.11.</span> <span class="toc-text">11、push()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#12、reverse"><span class="toc-number">1.12.</span> <span class="toc-text">12、reverse()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#13、shift"><span class="toc-number">1.13.</span> <span class="toc-text">13、shift()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14、slice"><span class="toc-number">1.14.</span> <span class="toc-text">14、slice()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#15、some"><span class="toc-number">1.15.</span> <span class="toc-text">15、some()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#16、sort"><span class="toc-number">1.16.</span> <span class="toc-text">16、sort()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#17、splice"><span class="toc-number">1.17.</span> <span class="toc-text">17、splice()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#18、unshift"><span class="toc-number">1.18.</span> <span class="toc-text">18、unshift()</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、数组去重处理"><span class="toc-number">2.</span> <span class="toc-text">二、数组去重处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、利用set和…"><span class="toc-number">2.1.</span> <span class="toc-text">1、利用set和…</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、利用filter"><span class="toc-number">2.2.</span> <span class="toc-text">2、利用filter</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、数组排序"><span class="toc-number">3.</span> <span class="toc-text">三、数组排序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、利用sort方法"><span class="toc-number">3.1.</span> <span class="toc-text">1、利用sort方法</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>数组是js中最常见的数据结构，同时js的数组功能十分强大，本次整理经常使用的一些数组方法，同时实现两个简单的功能。</p>
+<a id="more"></a>
+<h3 id="常见方法"><a href="#常见方法" class="headerlink" title="常见方法"></a>常见方法</h3><p>使用两个简单数组:<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var arr1 = [&apos;a&apos;, &apos;b&apos;, &apos;c&apos;, &apos;b&apos;];</span><br><span class="line">var arr2 = [&apos;x&apos;, &apos;y&apos;, &apos;z&apos;];</span><br></pre></td></tr></table></figure></p>
+<h4 id="1、Array-isArray"><a href="#1、Array-isArray" class="headerlink" title="1、Array.isArray()"></a>1、Array.isArray()</h4><p>判断一个变量是否为数组。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(Array.isArray(arr1)); //true</span><br></pre></td></tr></table></figure></p>
+<h4 id="2、concat"><a href="#2、concat" class="headerlink" title="2、concat()"></a>2、concat()</h4><p>数组合并，返回一个新数组。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(arr1.concat(arr2));  //[&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;b&apos;,&apos;x&apos;,&apos;y&apos;,&apos;z&apos;]</span><br></pre></td></tr></table></figure>
+<h4 id="3、every"><a href="#3、every" class="headerlink" title="3、every()"></a>3、every()</h4><p>判断数组中每个元素是否都满足条件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var everyResult = arr1.every(function (value, index, array) &#123;</span><br><span class="line">    return value.length === 1;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(everyResult); //true</span><br></pre></td></tr></table></figure>
+<h4 id="4、filter"><a href="#4、filter" class="headerlink" title="4、filter()"></a>4、filter()</h4><p>获取数组中满足条件的元素，并返回一个新数组。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var filterResult = arr1.filter(function (value, index, array) &#123;</span><br><span class="line">    return value !== &apos;b&apos;;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(filterResult);//[&apos;a&apos;,&apos;c&apos;]</span><br></pre></td></tr></table></figure>
+<h4 id="5、forEach"><a href="#5、forEach" class="headerlink" title="5、forEach()"></a>5、forEach()</h4><p>数组循环。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">arr1.forEach(function (value) &#123;</span><br><span class="line">    console.log(value);  //a、b、c、b</span><br><span class="line">&#125;);</span><br></pre></td></tr></table></figure></p>
+<h4 id="6、indexOf"><a href="#6、indexOf" class="headerlink" title="6、indexOf()"></a>6、indexOf()</h4><p>获取元素所在数组位置（正向）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(arr1.indexOf(&apos;a&apos;)); //0</span><br></pre></td></tr></table></figure>
+<h4 id="7、join"><a href="#7、join" class="headerlink" title="7、join()"></a>7、join()</h4><p>将数组元素使用某种内容分割，并拼接成一个字符串。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(arr1.join(&apos;,&apos;)); //a,b,c,b</span><br></pre></td></tr></table></figure>
+<h4 id="8、lastIndexOf"><a href="#8、lastIndexOf" class="headerlink" title="8、lastIndexOf()"></a>8、lastIndexOf()</h4><p>获取元素所在数组位置（反向）</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">console.log(arr1.lastIndexOf(&apos;m&apos;)); //-1</span><br></pre></td></tr></table></figure>
+<h4 id="9、map"><a href="#9、map" class="headerlink" title="9、map()"></a>9、map()</h4><p>对数组中每个元素按某一方法进行处理，并返回一个新数组</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var mapResult = arr1.map(function (value) &#123;</span><br><span class="line">    return value + value;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(mapResult); //[&apos;aa&apos;,&apos;bb&apos;,&apos;cc&apos;,&apos;bb&apos;]</span><br></pre></td></tr></table></figure>
+<h4 id="10、pop"><a href="#10、pop" class="headerlink" title="10、pop()"></a>10、pop()</h4><p>删除数组中最后一个元素并返回。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var popResult = arr1.pop();</span><br><span class="line">console.log(popResult); //&apos;b&apos;</span><br><span class="line">console.log(arr1); //[&apos;a&apos;,&apos;b&apos;,&apos;c&apos;]</span><br></pre></td></tr></table></figure></p>
+<h4 id="11、push"><a href="#11、push" class="headerlink" title="11、push()"></a>11、push()</h4><p>在数组末尾添加一个元素，返回数组长度。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var pushResult = arr1.push(&apos;d&apos;);</span><br><span class="line">console.log(pushResult);  //4</span><br><span class="line">console.log(arr1); //[&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;d&apos;]</span><br></pre></td></tr></table></figure></p>
+<h4 id="12、reverse"><a href="#12、reverse" class="headerlink" title="12、reverse()"></a>12、reverse()</h4><p>数组倒序排列。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">arr1.reverse();</span><br><span class="line">console.log(arr1); //[&apos;d&apos;,&apos;c&apos;,&apos;b&apos;,&apos;a&apos;]</span><br></pre></td></tr></table></figure>
+<h4 id="13、shift"><a href="#13、shift" class="headerlink" title="13、shift()"></a>13、shift()</h4><p>删除数组的第一个元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var shiftResult = arr1.shift();</span><br><span class="line">console.log(shiftResult); //d</span><br><span class="line">console.log(arr1); //[&apos;c&apos;,&apos;b&apos;,&apos;a&apos;]</span><br></pre></td></tr></table></figure>
+<h4 id="14、slice"><a href="#14、slice" class="headerlink" title="14、slice()"></a>14、slice()</h4><p>复制一个元素，可以选择数组起始位置。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var sliceResult = arr1.slice(1,3);</span><br><span class="line">console.log(sliceResult); //[&apos;b&apos;,&apos;a&apos;]</span><br></pre></td></tr></table></figure>
+<h4 id="15、some"><a href="#15、some" class="headerlink" title="15、some()"></a>15、some()</h4><p>判断数组中是否有一个元素满足条件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">var someResult = arr1.some(function (value) &#123;</span><br><span class="line">       return value === &apos;c&apos;;</span><br><span class="line">&#125;);</span><br><span class="line">console.log(someResult);  //true</span><br></pre></td></tr></table></figure>
+<h4 id="16、sort"><a href="#16、sort" class="headerlink" title="16、sort()"></a>16、sort()</h4><p>数组排序方法。默认排序顺序是根据字符串Unicode值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">var sortResult = [1,2,3,10,20,25].sort();</span><br><span class="line">console.log(sortResult); //[1,10,2,20,25,3]</span><br></pre></td></tr></table></figure></p>
+<h4 id="17、splice"><a href="#17、splice" class="headerlink" title="17、splice()"></a>17、splice()</h4><p>从数组中的某个位置删除或者添加元素。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var spliceResult = arr1.splice(1,1,&apos;e&apos;,&apos;f&apos;,&apos;g&apos;);</span><br><span class="line">console.log(spliceResult); //b</span><br><span class="line">console.log(arr1); //[&apos;c&apos;,&apos;e&apos;,&apos;f&apos;,&apos;g&apos;,&apos;a&apos;]</span><br></pre></td></tr></table></figure>
+<h4 id="18、unshift"><a href="#18、unshift" class="headerlink" title="18、unshift()"></a>18、unshift()</h4><p>在数组起始位置添加一个元素。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var unshiftResult = arr1.unshift(&apos;m&apos;);</span><br><span class="line">console.log(unshiftResult); //6</span><br><span class="line">console.log(arr1); //[&apos;m&apos;,&apos;c&apos;,&apos;e&apos;,&apos;f&apos;,&apos;g&apos;,&apos;a&apos;]</span><br></pre></td></tr></table></figure></p>
+<h3 id="二、数组去重处理"><a href="#二、数组去重处理" class="headerlink" title="二、数组去重处理"></a>二、数组去重处理</h3><h4 id="1、利用set和…"><a href="#1、利用set和…" class="headerlink" title="1、利用set和…"></a>1、利用set和…</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">var arr3 = [&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;a&apos;,&apos;d&apos;,&apos;b&apos;];</span><br><span class="line">var newArray = new Set(arr3);</span><br><span class="line">console.log([...newArray]); //[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]</span><br></pre></td></tr></table></figure>
+<h4 id="2、利用filter"><a href="#2、利用filter" class="headerlink" title="2、利用filter"></a>2、利用filter</h4><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">var arr3 = [&apos;a&apos;,&apos;b&apos;,&apos;c&apos;,&apos;a&apos;,&apos;d&apos;,&apos;b&apos;];</span><br><span class="line">var newArray = arr3.filter(function (value,index,array) &#123;</span><br><span class="line">    return index === array.indexOf(value);</span><br><span class="line">&#125;);</span><br><span class="line">console.log(newArray); //[&quot;a&quot;, &quot;b&quot;, &quot;c&quot;, &quot;d&quot;]</span><br></pre></td></tr></table></figure>
+<h3 id="三、数组排序"><a href="#三、数组排序" class="headerlink" title="三、数组排序"></a>三、数组排序</h3><h4 id="1、利用sort方法"><a href="#1、利用sort方法" class="headerlink" title="1、利用sort方法"></a>1、利用sort方法</h4><pre><code>var arr4 = [1,5,3,7,8,4,6];
+var newArray = arr4.sort(function (a,b) {
+    return a-b;
+});
+console.log(newArray); //[1, 3, 4, 5, 6, 7, 8]
+</code></pre><p>over…</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/前端/">前端</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2017/10/01/web-js-array-way-neaten/" data-title="js数组常见使用整理 | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/10/02/web-canvas-introduction-learn/" title="canvas入门学习">
+  <strong>上一篇：</strong><br/>
+  <span>
+  canvas入门学习</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/09/30/web-security-problem/"  title="前端安全问题初探">
+ <strong>下一篇：</strong><br/> 
+ <span>前端安全问题初探
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#常见方法"><span class="toc-number">1.</span> <span class="toc-text">常见方法</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、Array-isArray"><span class="toc-number">1.1.</span> <span class="toc-text">1、Array.isArray()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、concat"><span class="toc-number">1.2.</span> <span class="toc-text">2、concat()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、every"><span class="toc-number">1.3.</span> <span class="toc-text">3、every()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、filter"><span class="toc-number">1.4.</span> <span class="toc-text">4、filter()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5、forEach"><span class="toc-number">1.5.</span> <span class="toc-text">5、forEach()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#6、indexOf"><span class="toc-number">1.6.</span> <span class="toc-text">6、indexOf()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#7、join"><span class="toc-number">1.7.</span> <span class="toc-text">7、join()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#8、lastIndexOf"><span class="toc-number">1.8.</span> <span class="toc-text">8、lastIndexOf()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#9、map"><span class="toc-number">1.9.</span> <span class="toc-text">9、map()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#10、pop"><span class="toc-number">1.10.</span> <span class="toc-text">10、pop()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#11、push"><span class="toc-number">1.11.</span> <span class="toc-text">11、push()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#12、reverse"><span class="toc-number">1.12.</span> <span class="toc-text">12、reverse()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#13、shift"><span class="toc-number">1.13.</span> <span class="toc-text">13、shift()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#14、slice"><span class="toc-number">1.14.</span> <span class="toc-text">14、slice()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#15、some"><span class="toc-number">1.15.</span> <span class="toc-text">15、some()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#16、sort"><span class="toc-number">1.16.</span> <span class="toc-text">16、sort()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#17、splice"><span class="toc-number">1.17.</span> <span class="toc-text">17、splice()</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#18、unshift"><span class="toc-number">1.18.</span> <span class="toc-text">18、unshift()</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、数组去重处理"><span class="toc-number">2.</span> <span class="toc-text">二、数组去重处理</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、利用set和…"><span class="toc-number">2.1.</span> <span class="toc-text">1、利用set和…</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、利用filter"><span class="toc-number">2.2.</span> <span class="toc-text">2、利用filter</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、数组排序"><span class="toc-number">3.</span> <span class="toc-text">三、数组排序</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、利用sort方法"><span class="toc-number">3.1.</span> <span class="toc-text">1、利用sort方法</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

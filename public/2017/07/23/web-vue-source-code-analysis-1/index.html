@@ -1,0 +1,480 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Vue源码解析（一） | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="使用vue已经大半年时间了，写起来已经很顺手了。比起之前的jquery时代，vue配合webpack的使用，让前端代码整体性更强，代码量也比之前少了一些。用了一段时间后，也想了解Vue具体是如何实现这样的一个mvvm框架的，经过一段时间的挣扎，终于开始了源码解析。ps:本次解读的vue源码版本为2.3.3，本人水平有限，如果解析有误的地方，请批评指正。">
+<meta name="keywords" content="前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue源码解析（一）">
+<meta property="og:url" content="http://yoursite.com/2017/07/23/web-vue-source-code-analysis-1/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="使用vue已经大半年时间了，写起来已经很顺手了。比起之前的jquery时代，vue配合webpack的使用，让前端代码整体性更强，代码量也比之前少了一些。用了一段时间后，也想了解Vue具体是如何实现这样的一个mvvm框架的，经过一段时间的挣扎，终于开始了源码解析。ps:本次解读的vue源码版本为2.3.3，本人水平有限，如果解析有误的地方，请批评指正。">
+<meta property="og:updated_time" content="2018-01-21T09:45:15.142Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue源码解析（一）">
+<meta name="twitter:description" content="使用vue已经大半年时间了，写起来已经很顺手了。比起之前的jquery时代，vue配合webpack的使用，让前端代码整体性更强，代码量也比之前少了一些。用了一段时间后，也想了解Vue具体是如何实现这样的一个mvvm框架的，经过一段时间的挣扎，终于开始了源码解析。ps:本次解读的vue源码版本为2.3.3，本人水平有限，如果解析有误的地方，请批评指正。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/07/23/web-vue-source-code-analysis-1/" title="Vue源码解析（一）" itemprop="url">Vue源码解析（一）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2017-07-23T10:25:04.000Z" itemprop="datePublished"> Published 2017-07-23</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			
+		
+		</div>
+		
+		<p>使用vue已经大半年时间了，写起来已经很顺手了。比起之前的jquery时代，vue配合webpack的使用，让前端代码整体性更强，代码量也比之前少了一些。用了一段时间后，也想了解Vue具体是如何实现这样的一个mvvm框架的，经过一段时间的挣扎，终于开始了源码解析。ps:本次解读的vue源码版本为2.3.3，本人水平有限，如果解析有误的地方，请批评指正。</p>
+<a id="more"></a>
+<p>首先，不管采用什么方式引入vue,直接script引入，requireJs引入等等等，vue都会进行相关的初始化工作。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function Vue$3 (options) &#123;</span><br><span class="line">  if (&quot;development&quot; !== &apos;production&apos; &amp;&amp;</span><br><span class="line">    !(this instanceof Vue$3)</span><br><span class="line">  ) &#123;</span><br><span class="line">    warn(&apos;Vue is a constructor and should be called with the `new` keyword&apos;);</span><br><span class="line">  &#125;</span><br><span class="line">  this._init(options);</span><br><span class="line">&#125;</span><br><span class="line"></span><br><span class="line">initMixin(Vue$3);</span><br><span class="line">stateMixin(Vue$3);</span><br><span class="line">eventsMixin(Vue$3);</span><br><span class="line">lifecycleMixin(Vue$3);</span><br><span class="line">renderMixin(Vue$3);</span><br><span class="line">//全局Api的代码在比较靠下的位置</span><br><span class="line">initGlobalAPI(Vue$3);</span><br></pre></td></tr></table></figure></p>
+<p>定义了Vue$3这个类，接着调用了initMixin、stateMixin、eventsMixin、lifecycleMixin、renderMixin、initGlobalAPI几个方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br><span class="line">46</span><br><span class="line">47</span><br><span class="line">48</span><br><span class="line">49</span><br><span class="line">50</span><br><span class="line">51</span><br><span class="line">52</span><br><span class="line">53</span><br><span class="line">54</span><br><span class="line">55</span><br><span class="line">56</span><br><span class="line">57</span><br><span class="line">58</span><br></pre></td><td class="code"><pre><span class="line">var uid$1 = 0;</span><br><span class="line"></span><br><span class="line">function initMixin (Vue) &#123;</span><br><span class="line">  Vue.prototype._init = function (options) &#123;</span><br><span class="line">    var vm = this;</span><br><span class="line">    // a uid</span><br><span class="line">    vm._uid = uid$1++;</span><br><span class="line"></span><br><span class="line">    var startTag, endTag;</span><br><span class="line">    /* istanbul ignore if */</span><br><span class="line">    if (&quot;development&quot; !== &apos;production&apos; &amp;&amp; config.performance &amp;&amp; mark) &#123;</span><br><span class="line">      startTag = &quot;vue-perf-init:&quot; + (vm._uid);</span><br><span class="line">      endTag = &quot;vue-perf-end:&quot; + (vm._uid);</span><br><span class="line">      mark(startTag);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    // a flag to avoid this being observed</span><br><span class="line">    vm._isVue = true;</span><br><span class="line">    // merge options</span><br><span class="line">    if (options &amp;&amp; options._isComponent) &#123;</span><br><span class="line">      // optimize internal component instantiation</span><br><span class="line">      // since dynamic options merging is pretty slow, and none of the</span><br><span class="line">      // internal component options needs special treatment.</span><br><span class="line">      initInternalComponent(vm, options);</span><br><span class="line">    &#125; else &#123;</span><br><span class="line">      vm.$options = mergeOptions(</span><br><span class="line">        resolveConstructorOptions(vm.constructor),</span><br><span class="line">        options || &#123;&#125;,</span><br><span class="line">        vm</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line">    /* istanbul ignore else */</span><br><span class="line">    &#123;</span><br><span class="line">      initProxy(vm);</span><br><span class="line">    &#125;</span><br><span class="line">    // expose real self</span><br><span class="line">    vm._self = vm;</span><br><span class="line">    initLifecycle(vm);</span><br><span class="line">    initEvents(vm);</span><br><span class="line">    initRender(vm);</span><br><span class="line">    callHook(vm, &apos;beforeCreate&apos;);</span><br><span class="line">    initInjections(vm); // resolve injections before data/props</span><br><span class="line">    initState(vm);</span><br><span class="line">    initProvide(vm); // resolve provide after data/props</span><br><span class="line">    callHook(vm, &apos;created&apos;);</span><br><span class="line"></span><br><span class="line">    /* istanbul ignore if */</span><br><span class="line">    if (&quot;development&quot; !== &apos;production&apos; &amp;&amp; config.performance &amp;&amp; mark) &#123;</span><br><span class="line">      vm._name = formatComponentName(vm, false);</span><br><span class="line">      mark(endTag);</span><br><span class="line">      measure(((vm._name) + &quot; init&quot;), startTag, endTag);</span><br><span class="line">    &#125;</span><br><span class="line"></span><br><span class="line">    if (vm.$options.el) &#123;</span><br><span class="line">      vm.$mount(vm.$options.el);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>initMixin方法，定义了Vue$3的_init的方法。startTag, endTag,mark为开启performance模式同时浏览器支持Performance.mark()方法时，在浏览器开发工具中对组件进行性能追踪。根据_isComponent是否为true调用initInternalComponent或mergeOptions进行options合并。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br></pre></td><td class="code"><pre><span class="line">function initLifecycle (vm) &#123;</span><br><span class="line">  var options = vm.$options;</span><br><span class="line"></span><br><span class="line">  // locate first non-abstract parent</span><br><span class="line">  var parent = options.parent;</span><br><span class="line">  if (parent &amp;&amp; !options.abstract) &#123;</span><br><span class="line">    while (parent.$options.abstract &amp;&amp; parent.$parent) &#123;</span><br><span class="line">      parent = parent.$parent;</span><br><span class="line">    &#125;</span><br><span class="line">    parent.$children.push(vm);</span><br><span class="line">  &#125;</span><br><span class="line"></span><br><span class="line">  vm.$parent = parent;</span><br><span class="line">  vm.$root = parent ? parent.$root : vm;</span><br><span class="line"></span><br><span class="line">  vm.$children = [];</span><br><span class="line">  vm.$refs = &#123;&#125;;</span><br><span class="line"></span><br><span class="line">  vm._watcher = null;</span><br><span class="line">  vm._inactive = null;</span><br><span class="line">  vm._directInactive = false;</span><br><span class="line">  vm._isMounted = false;</span><br><span class="line">  vm._isDestroyed = false;</span><br><span class="line">  vm._isBeingDestroyed = false;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>生命周期初始化，找到第一个非抽象parent，在$children数组中添加vm。<code>$children</code>、<code>$refs</code> 等设置初始值。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br></pre></td><td class="code"><pre><span class="line">function initEvents (vm) &#123;</span><br><span class="line">  vm._events = Object.create(null);</span><br><span class="line">  vm._hasHookEvent = false;</span><br><span class="line">  // init parent attached events</span><br><span class="line">  var listeners = vm.$options._parentListeners;</span><br><span class="line">  if (listeners) &#123;</span><br><span class="line">    updateComponentListeners(vm, listeners);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>事件初始化，如果有父组件监听调用updateComponentListeners更新监听。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br></pre></td><td class="code"><pre><span class="line">function initRender (vm) &#123;</span><br><span class="line">  vm._vnode = null; // the root of the child tree</span><br><span class="line">  vm._staticTrees = null;</span><br><span class="line">  var parentVnode = vm.$vnode = vm.$options._parentVnode; // the placeholder node in parent tree</span><br><span class="line">  var renderContext = parentVnode &amp;&amp; parentVnode.context;</span><br><span class="line">  vm.$slots = resolveSlots(vm.$options._renderChildren, renderContext);</span><br><span class="line">  vm.$scopedSlots = emptyObject;</span><br><span class="line">  // bind the createElement fn to this instance</span><br><span class="line">  // so that we get proper render context inside it.</span><br><span class="line">  // args order: tag, data, children, normalizationType, alwaysNormalize</span><br><span class="line">  // internal version is used by render functions compiled from templates</span><br><span class="line">  vm._c = function (a, b, c, d) &#123; return createElement(vm, a, b, c, d, false); &#125;;</span><br><span class="line">  // normalization is always applied for the public version, used in</span><br><span class="line">  // user-written render functions.</span><br><span class="line">  vm.$createElement = function (a, b, c, d) &#123; return createElement(vm, a, b, c, d, true); &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>渲染初始化，调用resolveSlots方法返回vm子组件slots。渲染初始化结束后callHook(vm, ‘beforeCreate’)方法下发beforeCreate事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br></pre></td><td class="code"><pre><span class="line">function initInjections (vm) &#123;</span><br><span class="line">  var result = resolveInject(vm.$options.inject, vm);</span><br><span class="line">  if (result) &#123;</span><br><span class="line">    Object.keys(result).forEach(function (key) &#123;</span><br><span class="line">      /* istanbul ignore else */</span><br><span class="line">      &#123;</span><br><span class="line">        defineReactive$$1(vm, key, result[key], function () &#123;</span><br><span class="line">          warn(</span><br><span class="line">            &quot;Avoid mutating an injected value directly since the changes will be &quot; +</span><br><span class="line">            &quot;overwritten whenever the provided component re-renders. &quot; +</span><br><span class="line">            &quot;injection being mutated: \&quot;&quot; + key + &quot;\&quot;&quot;,</span><br><span class="line">            vm</span><br><span class="line">          );</span><br><span class="line">        &#125;);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>注入初始化。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br></pre></td><td class="code"><pre><span class="line">function initState (vm) &#123;</span><br><span class="line">  vm._watchers = [];</span><br><span class="line">  var opts = vm.$options;</span><br><span class="line">  if (opts.props) &#123; initProps(vm, opts.props); &#125;</span><br><span class="line">  if (opts.methods) &#123; initMethods(vm, opts.methods); &#125;</span><br><span class="line">  if (opts.data) &#123;</span><br><span class="line">    initData(vm);</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    observe(vm._data = &#123;&#125;, true /* asRootData */);</span><br><span class="line">  &#125;</span><br><span class="line">  if (opts.computed) &#123; initComputed(vm, opts.computed); &#125;</span><br><span class="line">  if (opts.watch) &#123; initWatch(vm, opts.watch); &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>初始化props、methods、data、computed、watch。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">function initProvide (vm) &#123;</span><br><span class="line">  var provide = vm.$options.provide;</span><br><span class="line">  if (provide) &#123;</span><br><span class="line">    vm._provided = typeof provide === &apos;function&apos;</span><br><span class="line">      ? provide.call(vm)</span><br><span class="line">      : provide;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>初始化provide。provide初始化结束后，调用callHook(vm, ‘created’)方法下发created事件。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">if (vm.$options.el) &#123;</span><br><span class="line">      vm.$mount(vm.$options.el);</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>最后，如果option中el存在，挂载元素到对应的el上，之后进行组件的渲染。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/前端/">前端</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2017/07/23/web-vue-source-code-analysis-1/" data-title="Vue源码解析（一） | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/07/31/essays-ai-think/" title="人工智能来临的焦虑和机会">
+  <strong>上一篇：</strong><br/>
+  <span>
+  人工智能来临的焦虑和机会</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/05/05/recommed-system-neaten/"  title="开源推荐系统整理">
+ <strong>下一篇：</strong><br/> 
+ <span>开源推荐系统整理
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>

@@ -1,0 +1,480 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>Vue源码解析（二） | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="接着看一下第二部分，调用stateMixin方法。">
+<meta name="keywords" content="前端">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Vue源码解析（二）">
+<meta property="og:url" content="http://yoursite.com/2017/09/03/web-vue-source-code-analysis-2/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="接着看一下第二部分，调用stateMixin方法。">
+<meta property="og:updated_time" content="2018-01-21T09:55:10.522Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Vue源码解析（二）">
+<meta name="twitter:description" content="接着看一下第二部分，调用stateMixin方法。">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="Menu">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+						<li><a href="/about">About</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="Search" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2017/09/03/web-vue-source-code-analysis-2/" title="Vue源码解析（二）" itemprop="url">Vue源码解析（二）</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2017-09-03T08:35:32.000Z" itemprop="datePublished"> Published 2017-09-03</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">Contents</strong>
+		
+			
+		
+		</div>
+		
+		<p>接着看一下第二部分，调用stateMixin方法。</p>
+<a id="more"></a>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br></pre></td><td class="code"><pre><span class="line">function stateMixin (Vue) &#123;</span><br><span class="line">  // flow somehow has problems with directly declared definition object</span><br><span class="line">  // when using Object.defineProperty, so we have to procedurally build up</span><br><span class="line">  // the object here.</span><br><span class="line">  var dataDef = &#123;&#125;;</span><br><span class="line">  dataDef.get = function () &#123; return this._data &#125;;</span><br><span class="line">  var propsDef = &#123;&#125;;</span><br><span class="line">  propsDef.get = function () &#123; return this._props &#125;;</span><br><span class="line">  &#123;</span><br><span class="line">    dataDef.set = function (newData) &#123;</span><br><span class="line">      warn(</span><br><span class="line">        &apos;Avoid replacing instance root $data. &apos; +</span><br><span class="line">        &apos;Use nested data properties instead.&apos;,</span><br><span class="line">        this</span><br><span class="line">      );</span><br><span class="line">    &#125;;</span><br><span class="line">    propsDef.set = function () &#123;</span><br><span class="line">      warn(&quot;$props is readonly.&quot;, this);</span><br><span class="line">    &#125;;</span><br><span class="line">  &#125;</span><br><span class="line">  Object.defineProperty(Vue.prototype, &apos;$data&apos;, dataDef);</span><br><span class="line">  Object.defineProperty(Vue.prototype, &apos;$props&apos;, propsDef);</span><br><span class="line"></span><br><span class="line">  Vue.prototype.$set = set;</span><br><span class="line">  Vue.prototype.$delete = del;</span><br><span class="line"></span><br><span class="line">  Vue.prototype.$watch = function (</span><br><span class="line">    expOrFn,</span><br><span class="line">    cb,</span><br><span class="line">    options</span><br><span class="line">  ) &#123;</span><br><span class="line">    var vm = this;</span><br><span class="line">    options = options || &#123;&#125;;</span><br><span class="line">    options.user = true;</span><br><span class="line">    var watcher = new Watcher(vm, expOrFn, cb, options);</span><br><span class="line">    if (options.immediate) &#123;</span><br><span class="line">      cb.call(vm, watcher.value);</span><br><span class="line">    &#125;</span><br><span class="line">    return function unwatchFn () &#123;</span><br><span class="line">      watcher.teardown();</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;;</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure>
+<p>在Vue的原型上定义了几个属性，分别是$<code>data、$props、$set、$delete、$watch。$data、$props</code>是实例的data和props的代理，可读不可写。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">function set (target, key, val) &#123;</span><br><span class="line">  if (Array.isArray(target) &amp;&amp; typeof key === &apos;number&apos;) &#123;</span><br><span class="line">    target.length = Math.max(target.length, key);</span><br><span class="line">    target.splice(key, 1, val);</span><br><span class="line">    return val</span><br><span class="line">  &#125;</span><br><span class="line">  if (hasOwn(target, key)) &#123;</span><br><span class="line">    target[key] = val;</span><br><span class="line">    return val</span><br><span class="line">  &#125;</span><br><span class="line">  var ob = (target ).__ob__;</span><br><span class="line">  if (target._isVue || (ob &amp;&amp; ob.vmCount)) &#123;</span><br><span class="line">    &quot;development&quot; !== &apos;production&apos; &amp;&amp; warn(</span><br><span class="line">      &apos;Avoid adding reactive properties to a Vue instance or its root $data &apos; +</span><br><span class="line">      &apos;at runtime - declare it upfront in the data option.&apos;</span><br><span class="line">    );</span><br><span class="line">    return val</span><br><span class="line">  &#125;</span><br><span class="line">  if (!ob) &#123;</span><br><span class="line">    target[key] = val;</span><br><span class="line">    return val</span><br><span class="line">  &#125;</span><br><span class="line">  defineReactive$$1(ob.value, key, val);</span><br><span class="line">  ob.dep.notify();</span><br><span class="line">  return val</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>set方法为设置动态数据，接受Object和Array两种类型，可以对数组插入或者或替换操作，也可以替换已有的object的内容，如果不存在则新生成一个可变化的数据。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">function del (target, key) &#123;</span><br><span class="line">  if (Array.isArray(target) &amp;&amp; typeof key === &apos;number&apos;) &#123;</span><br><span class="line">    target.splice(key, 1);</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  var ob = (target ).__ob__;</span><br><span class="line">  if (target._isVue || (ob &amp;&amp; ob.vmCount)) &#123;</span><br><span class="line">    &quot;development&quot; !== &apos;production&apos; &amp;&amp; warn(</span><br><span class="line">      &apos;Avoid deleting properties on a Vue instance or its root $data &apos; +</span><br><span class="line">      &apos;- just set it to null.&apos;</span><br><span class="line">    );</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  if (!hasOwn(target, key)) &#123;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  delete target[key];</span><br><span class="line">  if (!ob) &#123;</span><br><span class="line">    return</span><br><span class="line">  &#125;</span><br><span class="line">  ob.dep.notify();</span><br><span class="line">&#125;</span><br></pre></td></tr></table></figure></p>
+<p>delete方法删除数据中的动态参数，也接受Array和Object两种类型。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br><span class="line">43</span><br><span class="line">44</span><br><span class="line">45</span><br></pre></td><td class="code"><pre><span class="line">var Watcher = function Watcher (</span><br><span class="line">  vm,</span><br><span class="line">  expOrFn,</span><br><span class="line">  cb,</span><br><span class="line">  options</span><br><span class="line">) &#123;</span><br><span class="line">  this.vm = vm;</span><br><span class="line">  vm._watchers.push(this);</span><br><span class="line">  // options</span><br><span class="line">  if (options) &#123;</span><br><span class="line">    this.deep = !!options.deep;</span><br><span class="line">    this.user = !!options.user;</span><br><span class="line">    this.lazy = !!options.lazy;</span><br><span class="line">    this.sync = !!options.sync;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    this.deep = this.user = this.lazy = this.sync = false;</span><br><span class="line">  &#125;</span><br><span class="line">  this.cb = cb;</span><br><span class="line">  this.id = ++uid$2; // uid for batching</span><br><span class="line">  this.active = true;</span><br><span class="line">  this.dirty = this.lazy; // for lazy watchers</span><br><span class="line">  this.deps = [];</span><br><span class="line">  this.newDeps = [];</span><br><span class="line">  this.depIds = new _Set();</span><br><span class="line">  this.newDepIds = new _Set();</span><br><span class="line">  this.expression = expOrFn.toString();</span><br><span class="line">  // parse expression for getter</span><br><span class="line">  if (typeof expOrFn === &apos;function&apos;) &#123;</span><br><span class="line">    this.getter = expOrFn;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    this.getter = parsePath(expOrFn);</span><br><span class="line">    if (!this.getter) &#123;</span><br><span class="line">      this.getter = function () &#123;&#125;;</span><br><span class="line">      &quot;development&quot; !== &apos;production&apos; &amp;&amp; warn(</span><br><span class="line">        &quot;Failed watching path: \&quot;&quot; + expOrFn + &quot;\&quot; &quot; +</span><br><span class="line">        &apos;Watcher only accepts simple dot-delimited paths. &apos; +</span><br><span class="line">        &apos;For full control, use a function instead.&apos;,</span><br><span class="line">        vm</span><br><span class="line">      );</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  this.value = this.lazy</span><br><span class="line">    ? undefined</span><br><span class="line">    : this.get();</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>watch方法是观察某个属性或者某个计算属性的变化，第一个参数为观察的内容，第二个为回调函数，返回新值和旧值，第三个为属性配置。watch方法主要实例化了一个Watcher对象。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br></pre></td><td class="code"><pre><span class="line">Watcher.prototype.get = function get () &#123;</span><br><span class="line">  pushTarget(this);</span><br><span class="line">  var value;</span><br><span class="line">  var vm = this.vm;</span><br><span class="line">  if (this.user) &#123;</span><br><span class="line">    try &#123;</span><br><span class="line">      value = this.getter.call(vm, vm);</span><br><span class="line">    &#125; catch (e) &#123;</span><br><span class="line">      handleError(e, vm, (&quot;getter for watcher \&quot;&quot; + (this.expression) + &quot;\&quot;&quot;));</span><br><span class="line">    &#125;</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    value = this.getter.call(vm, vm);</span><br><span class="line">  &#125;</span><br><span class="line">  // &quot;touch&quot; every property so they are all tracked as</span><br><span class="line">  // dependencies for deep watching</span><br><span class="line">  if (this.deep) &#123;</span><br><span class="line">    traverse(value);</span><br><span class="line">  &#125;</span><br><span class="line">  popTarget();</span><br><span class="line">  this.cleanupDeps();</span><br><span class="line">  return value</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>watcher原型的get方法，获取watcher方法所观察的值（this.getter.call(vm,vm)）。</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Watcher.prototype.addDep = function addDep (dep) &#123;</span><br><span class="line">  var id = dep.id;</span><br><span class="line">  if (!this.newDepIds.has(id)) &#123;</span><br><span class="line">    this.newDepIds.add(id);</span><br><span class="line">    this.newDeps.push(dep);</span><br><span class="line">    if (!this.depIds.has(id)) &#123;</span><br><span class="line">      dep.addSub(this);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure>
+<p>addDep方法，添加依赖。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br></pre></td><td class="code"><pre><span class="line">Watcher.prototype.cleanupDeps = function cleanupDeps () &#123;</span><br><span class="line">    var this$1 = this;</span><br><span class="line"></span><br><span class="line">  var i = this.deps.length;</span><br><span class="line">  while (i--) &#123;</span><br><span class="line">    var dep = this$1.deps[i];</span><br><span class="line">    if (!this$1.newDepIds.has(dep.id)) &#123;</span><br><span class="line">      dep.removeSub(this$1);</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">  var tmp = this.depIds;</span><br><span class="line">  this.depIds = this.newDepIds;</span><br><span class="line">  this.newDepIds = tmp;</span><br><span class="line">  this.newDepIds.clear();</span><br><span class="line">  tmp = this.deps;</span><br><span class="line">  this.deps = this.newDeps;</span><br><span class="line">  this.newDeps = tmp;</span><br><span class="line">  this.newDeps.length = 0;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>cleanupDeps方法，清除依赖。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br></pre></td><td class="code"><pre><span class="line">Watcher.prototype.update = function update () &#123;</span><br><span class="line">  /* istanbul ignore else */</span><br><span class="line">  if (this.lazy) &#123;</span><br><span class="line">    this.dirty = true;</span><br><span class="line">  &#125; else if (this.sync) &#123;</span><br><span class="line">    this.run();</span><br><span class="line">  &#125; else &#123;</span><br><span class="line">    queueWatcher(this);</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>update方法，更新所观察的属性。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br></pre></td><td class="code"><pre><span class="line">Watcher.prototype.run = function run () &#123;</span><br><span class="line">  if (this.active) &#123;</span><br><span class="line">    var value = this.get();</span><br><span class="line">    if (</span><br><span class="line">      value !== this.value ||</span><br><span class="line">      // Deep watchers and watchers on Object/Arrays should fire even</span><br><span class="line">      // when the value is the same, because the value may</span><br><span class="line">      // have mutated.</span><br><span class="line">      isObject(value) ||</span><br><span class="line">      this.deep</span><br><span class="line">    ) &#123;</span><br><span class="line">      // set new value</span><br><span class="line">      var oldValue = this.value;</span><br><span class="line">      this.value = value;</span><br><span class="line">      if (this.user) &#123;</span><br><span class="line">        try &#123;</span><br><span class="line">          this.cb.call(this.vm, value, oldValue);</span><br><span class="line">        &#125; catch (e) &#123;</span><br><span class="line">          handleError(e, this.vm, (&quot;callback for watcher \&quot;&quot; + (this.expression) + &quot;\&quot;&quot;));</span><br><span class="line">        &#125;</span><br><span class="line">      &#125; else &#123;</span><br><span class="line">        this.cb.call(this.vm, value, oldValue);</span><br><span class="line">      &#125;</span><br><span class="line">    &#125;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>run方法，执行watcher实例所传的回调方法。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">Watcher.prototype.evaluate = function evaluate () &#123;</span><br><span class="line">  this.value = this.get();</span><br><span class="line">  this.dirty = false;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>重新获取watcher内的value值。目前不是很理解。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">Watcher.prototype.depend = function depend () &#123;</span><br><span class="line">    var this$1 = this;</span><br><span class="line"></span><br><span class="line">  var i = this.deps.length;</span><br><span class="line">  while (i--) &#123;</span><br><span class="line">    this$1.deps[i].depend();</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>为watcher内的每个dep添加依赖。<br><figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br></pre></td><td class="code"><pre><span class="line">Watcher.prototype.teardown = function teardown () &#123;</span><br><span class="line">    var this$1 = this;</span><br><span class="line"></span><br><span class="line">  if (this.active) &#123;</span><br><span class="line">    // remove self from vm&apos;s watcher list</span><br><span class="line">    // this is a somewhat expensive operation so we skip it</span><br><span class="line">    // if the vm is being destroyed.</span><br><span class="line">    if (!this.vm._isBeingDestroyed) &#123;</span><br><span class="line">      remove(this.vm._watchers, this);</span><br><span class="line">    &#125;</span><br><span class="line">    var i = this.deps.length;</span><br><span class="line">    while (i--) &#123;</span><br><span class="line">      this$1.deps[i].removeSub(this$1);</span><br><span class="line">    &#125;</span><br><span class="line">    this.active = false;</span><br><span class="line">  &#125;</span><br><span class="line">&#125;;</span><br></pre></td></tr></table></figure></p>
+<p>移除watcher自身所绑定的依赖。</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/前端/">前端</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2017/09/03/web-vue-source-code-analysis-2/" data-title="Vue源码解析（二） | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+ <div class="prev" >
+ <a href="/2017/09/04/web-vue-source-code-analysis-3/" title="Vue源码解析（三）">
+  <strong>上一篇：</strong><br/>
+  <span>
+  Vue源码解析（三）</span>
+</a>
+</div>
+
+
+<div class="next">
+<a href="/2017/07/31/essays-ai-think/"  title="人工智能来临的焦虑和机会">
+ <strong>下一篇：</strong><br/> 
+ <span>人工智能来临的焦虑和机会
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="Show Sidebar"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">Contents</strong>
+ 
+ 
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="Hide Sidebar"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">Tags</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>4</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">Links</p>
+    <ul>
+        
+    </ul>
+</div>
+
+  
+
+
+  <div class="rsspart">
+	<a href="/atom.xml" target="_blank" title="rss">RSS</a>
+</div>
+
+  <div class="weiboshow">
+  <p class="asidetitle">Weibo</p>
+    <iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>
+</div>
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="Back to Top"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
