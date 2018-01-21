@@ -2,7 +2,7 @@
 menu:
   Home: /
   Archives: /archives
-  About: /about
+#  About: /about
 ## you can create `tags` and `categories` folders in `../source`.
 ## And create a `index.md` file in each of them.
 ## set `front-matter`as
@@ -83,6 +83,7 @@ toc:
 links:
 #  码农圈: https://coderq.com,一个面向程序员交流分享的新一代社区
 #  Jark's Blog: http://wuchong.me
+  my github: https://github.com/feinimoshu753
 
 
 
