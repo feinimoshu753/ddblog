@@ -1,0 +1,475 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>2018_my_frontend_road | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="最近看了一篇蚂蚁金服团队写的文章，名字叫做“未来的前端工程师”。上面列举了前端工程师未来可以的发展方向、行业动态、技术栈等等，看完后自己也进行了一些思考，新的一年该如何往下走。前端三大框架已成主流，前端工程化也已逐渐成熟，ts让前端开发大型项目更加容易，rn让前端能够快速进入app的开发，nodejs让前端涉及后端变得容易，当然还有小程序、pwa等等。看起来前端又来到了一个繁荣的时候，但冷静下来想">
+<meta name="keywords" content="随笔">
+<meta property="og:type" content="article">
+<meta property="og:title" content="2018_my_frontend_road">
+<meta property="og:url" content="http://yoursite.com/2018/01/28/2018-my-frontend-road/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="最近看了一篇蚂蚁金服团队写的文章，名字叫做“未来的前端工程师”。上面列举了前端工程师未来可以的发展方向、行业动态、技术栈等等，看完后自己也进行了一些思考，新的一年该如何往下走。前端三大框架已成主流，前端工程化也已逐渐成熟，ts让前端开发大型项目更加容易，rn让前端能够快速进入app的开发，nodejs让前端涉及后端变得容易，当然还有小程序、pwa等等。看起来前端又来到了一个繁荣的时候，但冷静下来想">
+<meta property="og:updated_time" content="2018-01-28T03:51:28.021Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="2018_my_frontend_road">
+<meta name="twitter:description" content="最近看了一篇蚂蚁金服团队写的文章，名字叫做“未来的前端工程师”。上面列举了前端工程师未来可以的发展方向、行业动态、技术栈等等，看完后自己也进行了一些思考，新的一年该如何往下走。前端三大框架已成主流，前端工程化也已逐渐成熟，ts让前端开发大型项目更加容易，rn让前端能够快速进入app的开发，nodejs让前端涉及后端变得容易，当然还有小程序、pwa等等。看起来前端又来到了一个繁荣的时候，但冷静下来想">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜單">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2018/01/28/2018-my-frontend-road/" title="2018_my_frontend_road" itemprop="url">2018_my_frontend_road</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2018-01-28T03:50:53.000Z" itemprop="datePublished"> 發表於 2018-01-28</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目錄</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#一、三大框架"><span class="toc-number">1.</span> <span class="toc-text">一、三大框架</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二、webpack"><span class="toc-number">2.</span> <span class="toc-text">二、webpack</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三、typescript"><span class="toc-number">3.</span> <span class="toc-text">三、typescript</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#四、react-native"><span class="toc-number">4.</span> <span class="toc-text">四、react-native</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#五、nodejs"><span class="toc-number">5.</span> <span class="toc-text">五、nodejs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#六、小程序"><span class="toc-number">6.</span> <span class="toc-text">六、小程序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#七、pwa"><span class="toc-number">7.</span> <span class="toc-text">七、pwa</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#八、数据可视化、物联网、人工智能等等"><span class="toc-number">8.</span> <span class="toc-text">八、数据可视化、物联网、人工智能等等</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#九、计算机基础"><span class="toc-number">9.</span> <span class="toc-text">九、计算机基础</span></a></li></ol>
+		
+		</div>
+		
+		<p>最近看了一篇蚂蚁金服团队写的文章，名字叫做“未来的前端工程师”。上面列举了前端工程师未来可以的发展方向、行业动态、技术栈等等，看完后自己也进行了一些思考，新的一年该如何往下走。<br>前端三大框架已成主流，前端工程化也已逐渐成熟，ts让前端开发大型项目更加容易，rn让前端能够快速进入app的开发，nodejs让前端涉及后端变得容易，当然还有小程序、pwa等等。看起来前端又来到了一个繁荣的时候，但冷静下来想想，作为一名前端工程师，到底需要具备哪些能力，需要掌握哪些知识，才能更好的完成自己工作。<br>现在前端涉及到的范围太广，可以学习的东西太多太多，而人的精力是有限的，所以还是需要选择合适的方向进行学习。简单的列举一下学习的内容:</p>
+<h4 id="一、三大框架"><a href="#一、三大框架" class="headerlink" title="一、三大框架"></a>一、三大框架</h4><p>目前来看vue和react已经是主流了，生态也比较完善，angular的使用的会少一些，所以优先学习vue和react为主，angular可以视情况而定学习。当然不仅仅是学习框架的使用，还需要学习他们运行的原理，以及周边生态的一些原理，先看vue的源码，稍微简单一些。</p>
+<h4 id="二、webpack"><a href="#二、webpack" class="headerlink" title="二、webpack"></a>二、webpack</h4><p>webpack现在很多项目以及离不开他了，虽然他的配置比较繁琐，但是功能很强大，所以webpack是必须要掌握的内容，同时了解他的打包机制、loader和插件原理也是很有必要的。rollup和parcel是最近两个新的打包工具，可以暂时观望。</p>
+<h4 id="三、typescript"><a href="#三、typescript" class="headerlink" title="三、typescript"></a>三、typescript</h4><p>typescript是一门很棒的语言（虽然很多人不这么认为），提供了静态检测等功能，但它不是必须学习的内容，原生的js已经满足很多人的开发需求了。</p>
+<h4 id="四、react-native"><a href="#四、react-native" class="headerlink" title="四、react-native"></a>四、react-native</h4><p>rn让前端可以参与的app的开发中，提供了比h5更好的体验，同时比原生开发有更高的效率，但是目前rn并不完善，也有很多需要解决的问题。目前可以尝试的写写demo，了解整个开发流程。</p>
+<h4 id="五、nodejs"><a href="#五、nodejs" class="headerlink" title="五、nodejs"></a>五、nodejs</h4><p>前端几乎已经离不开node了，npm包管理，开发时启动node服务等等，所以nodejs算是一个必须学习的内容了，掌握node的一些开发思想也是很有必要的，当然更多的后端知识可以视情况而定。</p>
+<h4 id="六、小程序"><a href="#六、小程序" class="headerlink" title="六、小程序"></a>六、小程序</h4><p>小程序的开发其实比较简单，需要学习的时间并不长，可以尝试着自己写一个小程序体验。</p>
+<h4 id="七、pwa"><a href="#七、pwa" class="headerlink" title="七、pwa"></a>七、pwa</h4><p>从去年开始一些大公司已经在使用pwa了，而苹果也开始支持pwa了，所以可能是一个未来的趋势，可以先了解pwa的一些基础内容，之后再进行更深入的学习，优先级较低。</p>
+<h4 id="八、数据可视化、物联网、人工智能等等"><a href="#八、数据可视化、物联网、人工智能等等" class="headerlink" title="八、数据可视化、物联网、人工智能等等"></a>八、数据可视化、物联网、人工智能等等</h4><p>这些属于比较细分的一些领域了，根据自己的需求和规划进行选择性的学习。</p>
+<h4 id="九、计算机基础"><a href="#九、计算机基础" class="headerlink" title="九、计算机基础"></a>九、计算机基础</h4><p>其实有些前端工程师的计算机基础会差一些，包括我自己，像数据结构、算法、操作系统等等也是需要学习的内容，它可能不会给你在目前的工作中带来太大的帮助，但是在有些场景下这些知识会带来一些解决问题的灵感。</p>
+<hr>
+<p>分割线</p>
+<p>学习的内容已经总结的差不多了，再谈谈最近的工作情况。最近因为一些需求的原因，需要和后端、app的同学打交道，这个时候我突然发现了自己的一些优势—能够比较好的和他们沟通。这和自己之前的工作经历有关，之前在创业公司待了2年多的时间，做过1年的android，参与过ios开发，也做过简单的后端开发，对各个系统都有一定的了解，所以沟通也会方便很多，自己也能写个java接口什么的，也减轻了后端同学的工作量。所以之前2年的工作经历对自己的帮助也是蛮大的。<br>但最近在和后端、app同学打交道的时候发现一个问题，前端的话语权很弱。在和后端同学一起开发的时候，接口数据定义等等都是由后端决定的，项目和系统的拆分等等也是后端同学决定的。在和app同学一起开发rn的时候，底层的项目、依赖是app同学决定的，路由跳转、组件封装等等也是app同学来做的，前端更多的就只能在基础上写写页面和功能而已。当然这可能这和自己公司的情况有关，也有分工合作的原因在里面。<br>还有就是最近自己在看计算机网络的书，学到了很多东西，有很多生活中的问题也可以得到解释，比如路由器的简单工作原理、网络请求访问原理等等，还是很有意思的一件事情，希望能够尽快学习完吧。</p>
+<p>最后附上蚂蚁金服文章的地址:<br><a href="https://juejin.im/post/5a474c8ff265da430a50ea57" target="_blank" rel="noopener">未来的前端工程师</a></p>
+<p>over…</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/随笔/">随笔</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2018/01/28/2018-my-frontend-road/" data-title="2018_my_frontend_road | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2018/01/14/essays-2017-summarize/"  title="2017年年度总结">
+ <strong>下一篇：</strong><br/> 
+ <span>2017年年度总结
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="顯示側邊欄"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目錄</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-4"><a class="toc-link" href="#一、三大框架"><span class="toc-number">1.</span> <span class="toc-text">一、三大框架</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#二、webpack"><span class="toc-number">2.</span> <span class="toc-text">二、webpack</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#三、typescript"><span class="toc-number">3.</span> <span class="toc-text">三、typescript</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#四、react-native"><span class="toc-number">4.</span> <span class="toc-text">四、react-native</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#五、nodejs"><span class="toc-number">5.</span> <span class="toc-text">五、nodejs</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#六、小程序"><span class="toc-number">6.</span> <span class="toc-text">六、小程序</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#七、pwa"><span class="toc-number">7.</span> <span class="toc-text">七、pwa</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#八、数据可视化、物联网、人工智能等等"><span class="toc-number">8.</span> <span class="toc-text">八、数据可视化、物联网、人工智能等等</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#九、计算机基础"><span class="toc-number">9.</span> <span class="toc-text">九、计算机基础</span></a></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隱藏側邊欄"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">標簽</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情鏈接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://github.com/feinimoshu753" target="_blank" title="my github">my github</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <!--<div class="rsspart">-->
+	<!--<a href="/atom.xml" target="_blank" title="rss">RSS 訂閱</a>-->
+<!--</div>-->
+
+  <!--<div class="weiboshow">-->
+  <!--<p class="asidetitle">新浪微博</p>-->
+    <!--<iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>-->
+<!--</div>-->
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回頂部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
