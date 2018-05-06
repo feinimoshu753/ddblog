@@ -1,0 +1,488 @@
+
+ <!DOCTYPE HTML>
+<html >
+<head>
+  <meta charset="UTF-8">
+  
+    <title>react-native从入门到放弃 | 小胡说</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1,user-scalable=no">
+    
+    <meta name="author" content="edward hu">
+    
+
+    
+    <meta name="description" content="刚刚度过了繁忙的一个月，连续不断的需求让自己有点招架不住了。写的代码质量有些堪忧，又导致不断的修改bug，陷入了恶性循环中了，不过随着最近最后一个需求即将完结，终于抽空写写rn相关的内容了。这个标题略有写浮夸，主要是为了吸引眼球，也有自己感受的原因。">
+<meta name="keywords" content="react-native">
+<meta property="og:type" content="article">
+<meta property="og:title" content="react-native从入门到放弃">
+<meta property="og:url" content="http://yoursite.com/2018/03/26/rn-entry-to-giveup/index.html">
+<meta property="og:site_name" content="小胡说">
+<meta property="og:description" content="刚刚度过了繁忙的一个月，连续不断的需求让自己有点招架不住了。写的代码质量有些堪忧，又导致不断的修改bug，陷入了恶性循环中了，不过随着最近最后一个需求即将完结，终于抽空写写rn相关的内容了。这个标题略有写浮夸，主要是为了吸引眼球，也有自己感受的原因。">
+<meta property="og:image" content="https://img-blog.csdn.net/20180326210445589?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180326210724654?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180326211321940?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180326211513916?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:image" content="https://img-blog.csdn.net/20180326211455828?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+<meta property="og:updated_time" content="2018-05-06T07:59:42.257Z">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="react-native从入门到放弃">
+<meta name="twitter:description" content="刚刚度过了繁忙的一个月，连续不断的需求让自己有点招架不住了。写的代码质量有些堪忧，又导致不断的修改bug，陷入了恶性循环中了，不过随着最近最后一个需求即将完结，终于抽空写写rn相关的内容了。这个标题略有写浮夸，主要是为了吸引眼球，也有自己感受的原因。">
+<meta name="twitter:image" content="https://img-blog.csdn.net/20180326210445589?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70">
+
+    
+    <link rel="alternative" href="/atom.xml" title="小胡说" type="application/atom+xml">
+    
+    
+    <link rel="icon" href="/img/favicon.ico">
+    
+    
+    <link rel="apple-touch-icon" href="/img/jacman.jpg">
+    <link rel="apple-touch-icon-precomposed" href="/img/jacman.jpg">
+    
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+
+  <body>
+    <header>
+      
+<div>
+		
+			<div id="imglogo">
+				<a href="/"><img style="border-radius: 50%" src="/img/logo.png" alt="小胡说" title="小胡说"/></a>
+			</div>
+			
+			<div id="textlogo">
+				<h1 class="site-name"><a href="/" title="小胡说">小胡说</a></h1>
+				<h2 class="blog-motto"></h2>
+			</div>
+			<div class="navbar"><a class="navbutton navmobile" href="#" title="菜单">
+			</a></div>
+			<nav class="animated">
+				<ul>
+					<ul>
+					 
+						<li><a href="/">Home</a></li>
+					
+						<li><a href="/archives">Archives</a></li>
+					
+					<li>
+ 					
+					<form class="search" action="//google.com/search" method="get" accept-charset="utf-8">
+						<label>Search</label>
+						<input type="search" id="search" name="q" autocomplete="off" maxlength="20" placeholder="搜索" />
+						<input type="hidden" name="q" value="site:yoursite.com">
+					</form>
+					
+					</li>
+				</ul>
+			</nav>			
+</div>
+    </header>
+    <div id="container">
+      <div id="main" class="post" itemscope itemprop="blogPost">
+  
+	<article itemprop="articleBody"> 
+		<header class="article-info clearfix">
+  <h1 itemprop="name">
+    
+      <a href="/2018/03/26/rn-entry-to-giveup/" title="react-native从入门到放弃" itemprop="url">react-native从入门到放弃</a>
+  </h1>
+  <p class="article-author">By
+       
+		<a href="/about" title="edward hu" target="_blank" itemprop="author">edward hu</a>
+		
+  <p class="article-time">
+    <time datetime="2018-03-26T14:54:53.000Z" itemprop="datePublished"> 发表于 2018-03-26</time>
+    
+  </p>
+</header>
+	<div class="article-content">
+		
+		<div id="toc" class="toc-article">
+			<strong class="toc-title">文章目录</strong>
+		
+			<ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、rn历史简介"><span class="toc-number">1.</span> <span class="toc-text">一、rn历史简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、rn原理简介"><span class="toc-number">2.</span> <span class="toc-text">二、rn原理简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、前端上手rn"><span class="toc-number">3.</span> <span class="toc-text">三、前端上手rn</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、rn对前端意味着什么"><span class="toc-number">3.1.</span> <span class="toc-text">1、rn对前端意味着什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、前端上手难度"><span class="toc-number">3.2.</span> <span class="toc-text">2、前端上手难度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、前端遇到的小问题"><span class="toc-number">3.3.</span> <span class="toc-text">3、前端遇到的小问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、rn打开的正确方式"><span class="toc-number">4.</span> <span class="toc-text">四、rn打开的正确方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、存在的问题"><span class="toc-number">5.</span> <span class="toc-text">五、存在的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、不断更新的版本"><span class="toc-number">5.1.</span> <span class="toc-text">1、不断更新的版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、问题排查困难"><span class="toc-number">5.2.</span> <span class="toc-text">2、问题排查困难</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、长列表及动画性能不佳"><span class="toc-number">5.3.</span> <span class="toc-text">3、长列表及动画性能不佳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、首页白屏问题"><span class="toc-number">5.4.</span> <span class="toc-text">4、首页白屏问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5、优秀的热更新方案"><span class="toc-number">5.5.</span> <span class="toc-text">5、优秀的热更新方案</span></a></li></ol></li></ol>
+		
+		</div>
+		
+		<p>刚刚度过了繁忙的一个月，连续不断的需求让自己有点招架不住了。写的代码质量有些堪忧，又导致不断的修改bug，陷入了恶性循环中了，不过随着最近最后一个需求即将完结，终于抽空写写rn相关的内容了。这个标题略有写浮夸，主要是为了吸引眼球，也有自己感受的原因。</p>
+<a id="more"></a>
+<h3 id="一、rn历史简介"><a href="#一、rn历史简介" class="headerlink" title="一、rn历史简介"></a>一、rn历史简介</h3><p>大家都知道rn是facebook开源的一个框架，不过关于rn的历史大家可能不太清楚。facebook在客户端2.0版本的时候，将大部分页面使用web技术实现，当时大概是2011年，android还在2.3版本、ios还在5.0版本。可想而知，结果当然是扑街了，在当时网页在手机上的体验相当的糟糕，用户吐槽声一片，facebook只能迅速的换成原生的实现。不得不说虽然是一次失败的尝试，但是facebook算是混合应用的先驱者和探索者，这也为后来facebook开发rn打下了基础。<br>rn的idea是在2013年的一个极客大会上提出的，2014年7月facebook内部开始尝试使用这项技术，到了2015年3月，rn的ios版本正式开源，到了同年9月，rn的android版本也开源了。大概的发展历程如下:<br><img src="https://img-blog.csdn.net/20180326210445589?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>rn虽然开源了接近了3年的时间了，但依然还没有到达1.0的正式版本，目前到了0.54版本，期待2021年1.0版本上线的时候…….不得不说，rn是历史上第一个没到正式版本，github却有6w+星星的项目，大写的服气。</p>
+<h3 id="二、rn原理简介"><a href="#二、rn原理简介" class="headerlink" title="二、rn原理简介"></a>二、rn原理简介</h3><p><img src="https://img-blog.csdn.net/20180326210724654?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>盗了一张别人的android端架构图（侵删），rn的架构分为3层，java/oc层、c++层以及js层。这个结构和app内嵌h5基本一致，同样涉及到js和native通信等，只是将webview层替换为了c++层。</p>
+<h3 id="三、前端上手rn"><a href="#三、前端上手rn" class="headerlink" title="三、前端上手rn"></a>三、前端上手rn</h3><h4 id="1、rn对前端意味着什么"><a href="#1、rn对前端意味着什么" class="headerlink" title="1、rn对前端意味着什么"></a>1、rn对前端意味着什么</h4><p>我个人的理解是rn能帮助前端开发者使用熟悉的方式开发出一款接近原生体验的App，前提是你对react比较熟悉。接近原生体验要从两个方面来说这个问题，一个方面是rn的实现方式就决定了rn开发出的app只能是接近原生的体验，另一方面是前端同学一般对客户端开发不熟悉，在某些需要客户端方面进行支持优化的地方很难去处理。</p>
+<h4 id="2、前端上手难度"><a href="#2、前端上手难度" class="headerlink" title="2、前端上手难度"></a>2、前端上手难度</h4><p>会React开发就能很快上手RN，还可以使用React全家桶哦。rn直接和react开发有很多相似的地方，同时也可以用是redux等react常用的第三方库，上手难度不大。</p>
+<h4 id="3、前端遇到的小问题"><a href="#3、前端遇到的小问题" class="headerlink" title="3、前端遇到的小问题"></a>3、前端遇到的小问题</h4><ul>
+<li>元素超过一屏不滚动<br>web端的页面天生会滚动，如果元素超过了一屏就会出现滚动条，但是客户端上元素超过一屏是不会滚动的，需要在最外层套上一个能滚动的元素，比如scrollview或则listview等等。</li>
+<li>ios和android的平台差异<br>虽然rn尽量处理了android和ios两端之前的差异，但是还是两端还是有一些不一致的地方，比如有些控件的属性只在某一端能够使用，这个时候我们尽量避免使用这样的属性，采用两端效果能一致的实现方式来处理</li>
+<li>长列表的选择<br>rn目前已经提供了listview和flatList两种长列表的方式，listview因为性能问题基本被放弃使用了，所以在选择长列表的时候尽量选择flatlist或者其他开源的列表组件。<h3 id="四、rn打开的正确方式"><a href="#四、rn打开的正确方式" class="headerlink" title="四、rn打开的正确方式"></a>四、rn打开的正确方式</h3><img src="https://img-blog.csdn.net/20180326211321940?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这是看到别人的博客上写的一段话，看了之后挺有感触的，因为自己在写rn的时候也觉得这是一个需要多方合作的一种开发模式。之前了解到携程好像将客户端和前端合并为大前端团队了，客户端和前端的同学一起协作开发。客户端的同学在app容器处理上肯定是最好的选择，但是一般在react开发上面不是很熟悉，前端同学明显在react的开发上比客户端同学更熟悉和了解，但是一般对客户端的开发比较陌生。双方可以完成自己更擅长的部分，同时可以相互学习各自领域的内容，这是一种极好的提升的方式。<h3 id="五、存在的问题"><a href="#五、存在的问题" class="headerlink" title="五、存在的问题"></a>五、存在的问题</h3><h4 id="1、不断更新的版本"><a href="#1、不断更新的版本" class="headerlink" title="1、不断更新的版本"></a>1、不断更新的版本</h4><img src="https://img-blog.csdn.net/20180326211513916?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这是rn版本的截图，3年时间已经更新了四十几个版本，不同版本之间差距还是挺大的，所以如何做好rn版本管理以及升级是一个非常重要的工作，主要是兼容性问题。<h4 id="2、问题排查困难"><a href="#2、问题排查困难" class="headerlink" title="2、问题排查困难"></a>2、问题排查困难</h4><img src="https://img-blog.csdn.net/20180326211455828?watermark/2/text/aHR0cHM6Ly9ibG9nLmNzZG4ubmV0L3UwMTQ2NDEwMTA=/font/5a6L5L2T/fontsize/400/fill/I0JBQkFCMA==/dissolve/70" alt="这里写图片描述"><br>这是做rn经常会看到的一张图，大红的背景里提示你出现了错误，虽然说有调试工具可以帮助你定位错误，但是和web开发不同，rn报错有可能是前端爆的错误，也可能是客户端的错误，问题排查起来会比较苦难。<h4 id="3、长列表及动画性能不佳"><a href="#3、长列表及动画性能不佳" class="headerlink" title="3、长列表及动画性能不佳"></a>3、长列表及动画性能不佳</h4></li>
+<li>长列表快速滚动时会出现白屏的情况<br>  长列表快速向上滚动时，列表会出现白屏的情况。这主要是由于滚动时native和js频繁通信，导致客户端渲染不及时所导致的问题。目前还没有特别好的解决办法，有些公司会尽量避免在rn上使用长列表来规避这样的问题，如果列表内容比较简单的话，白屏出现的可能性会比较小。</li>
+<li>动画效果出现卡顿（特别是android手机上）<br>rn的实现出来的动画会比较卡顿，原因和上一个问题基本相同。可能得解决方法是将动画完全由原生实现，js端直接使用原生动画，这样就可以避免动画卡顿的问题。<h4 id="4、首页白屏问题"><a href="#4、首页白屏问题" class="headerlink" title="4、首页白屏问题"></a>4、首页白屏问题</h4>打包成Bundle包后一般会有几M，甚至十几M，导致首次渲染时白屏时间很长。<br>在最新款的手机上，白屏的时间很短，然而在低版本的android手机上白屏时间缺非常的长。当然首页白屏问题现在已经有很多方案进行处理，比如拆包和预加载，这两种都是比较常见的处理方案了。<h4 id="5、优秀的热更新方案"><a href="#5、优秀的热更新方案" class="headerlink" title="5、优秀的热更新方案"></a>5、优秀的热更新方案</h4></li>
+<li>自搭还是第三方？<br>一般公司都会选择自己搭建热更新框架，比较很少有公司愿意把这种更新的业务交由其他公司来完成，小公司的话可以尝试使用微软的热更新方案。</li>
+<li>如何做好兼容性处理？<br>热更新也会导致兼容性问题，比如在之前的bundle包里没有这个功能，或者功能的结构发生变化，导致老版本无法正常使用新版本的内容。可能得解决方案有:<br>1、控制版本，不兼容的版本就不进行热更新<br>2、对客户端开方的接口进行封装，屏蔽客户端内部的实现<br>3、不使用或者尽量少使用热更新方案，将rn作为一个类似原生模块嵌入到app中，每次发布版本才更新一次rn包</li>
+<li>傲娇的苹果<br>苹果之前封杀过JSPatch等热跟新方案，没准苹果有出台什么规则不允许rn之类的热更新，所以也得做好心理准备。</li>
+</ul>
+<p>到这就写的差不用多了，最近rn的尝试也是挺有意义的，虽然开发流程等并没有太多新的东西，但是对rn开发流程、整体的结构等有了更深入的了解，之后准备再写写有关rn框架相关的东西，更深入的去了解这个框架。目前来说，rn还不是一个比较成熟的框架，在大型项目中的应用还需要更加谨慎的看待，所以最后点题，rn从入门到放弃，期待1.0版本的到来。</p>
+<p>over…</p>
+  
+	</div>
+		<footer class="article-footer clearfix">
+<div class="article-catetags">
+
+
+  <div class="article-tags">
+  
+  <span></span> <a href="/tags/react-native/">react-native</a>
+  </div>
+
+</div>
+
+
+
+	<div class="article-share" id="share">
+	
+	  <div data-url="http://yoursite.com/2018/03/26/rn-entry-to-giveup/" data-title="react-native从入门到放弃 | 小胡说" data-tsina="" class="share clearfix">
+	  </div>
+	
+	</div>
+
+
+</footer>
+
+   	       
+	</article>
+	
+<nav class="article-nav clearfix">
+ 
+
+<div class="next">
+<a href="/2018/01/28/2018-my-frontend-road/"  title="2018--我的前端之路">
+ <strong>下一篇：</strong><br/> 
+ <span>2018--我的前端之路
+</span>
+</a>
+</div>
+
+</nav>
+
+	
+
+
+
+</div>  
+      <div class="openaside"><a class="navbutton" href="#" title="显示侧边栏"></a></div>
+
+  <div id="toc" class="toc-aside">
+  <strong class="toc-title">文章目录</strong>
+ 
+ <ol class="toc"><li class="toc-item toc-level-3"><a class="toc-link" href="#一、rn历史简介"><span class="toc-number">1.</span> <span class="toc-text">一、rn历史简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#二、rn原理简介"><span class="toc-number">2.</span> <span class="toc-text">二、rn原理简介</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#三、前端上手rn"><span class="toc-number">3.</span> <span class="toc-text">三、前端上手rn</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、rn对前端意味着什么"><span class="toc-number">3.1.</span> <span class="toc-text">1、rn对前端意味着什么</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、前端上手难度"><span class="toc-number">3.2.</span> <span class="toc-text">2、前端上手难度</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、前端遇到的小问题"><span class="toc-number">3.3.</span> <span class="toc-text">3、前端遇到的小问题</span></a></li></ol></li><li class="toc-item toc-level-3"><a class="toc-link" href="#四、rn打开的正确方式"><span class="toc-number">4.</span> <span class="toc-text">四、rn打开的正确方式</span></a></li><li class="toc-item toc-level-3"><a class="toc-link" href="#五、存在的问题"><span class="toc-number">5.</span> <span class="toc-text">五、存在的问题</span></a><ol class="toc-child"><li class="toc-item toc-level-4"><a class="toc-link" href="#1、不断更新的版本"><span class="toc-number">5.1.</span> <span class="toc-text">1、不断更新的版本</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#2、问题排查困难"><span class="toc-number">5.2.</span> <span class="toc-text">2、问题排查困难</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#3、长列表及动画性能不佳"><span class="toc-number">5.3.</span> <span class="toc-text">3、长列表及动画性能不佳</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#4、首页白屏问题"><span class="toc-number">5.4.</span> <span class="toc-text">4、首页白屏问题</span></a></li><li class="toc-item toc-level-4"><a class="toc-link" href="#5、优秀的热更新方案"><span class="toc-number">5.5.</span> <span class="toc-text">5、优秀的热更新方案</span></a></li></ol></li></ol>
+ 
+  </div>
+
+<div id="asidepart">
+<div class="closeaside"><a class="closebutton" href="#" title="隐藏侧边栏"></a></div>
+<aside class="clearfix">
+
+  
+
+
+  
+
+  
+<div class="tagslist">
+	<p class="asidetitle">标签</p>
+		<ul class="clearfix">
+		
+			
+				<li><a href="/tags/前端/" title="前端">前端<sup>30</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/随笔/" title="随笔">随笔<sup>5</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/android/" title="android">android<sup>2</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/推荐系统/" title="推荐系统">推荐系统<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/微信小程序/" title="微信小程序">微信小程序<sup>1</sup></a></li>
+			
+		
+			
+				<li><a href="/tags/react-native/" title="react-native">react-native<sup>1</sup></a></li>
+			
+		
+		</ul>
+</div>
+
+
+  <div class="linkslist">
+  <p class="asidetitle">友情链接</p>
+    <ul>
+        
+          <li>
+            
+            	<a href="https://github.com/feinimoshu753" target="_blank" title="my github">my github</a>
+            
+          </li>
+        
+    </ul>
+</div>
+
+  
+
+
+  <!--<div class="rsspart">-->
+	<!--<a href="/atom.xml" target="_blank" title="rss">RSS 订阅</a>-->
+<!--</div>-->
+
+  <!--<div class="weiboshow">-->
+  <!--<p class="asidetitle">新浪微博</p>-->
+    <!--<iframe width="100%" height="119" class="share_self"  frameborder="0" scrolling="no" src="http://widget.weibo.com/weiboshow/index.php?language=&width=0&height=119&fansRow=2&ptype=1&speed=0&skin=9&isTitle=1&noborder=1&isWeibo=0&isFans=0&uid=&verifier=&dpc=1"></iframe>-->
+<!--</div>-->
+
+
+</aside>
+</div>
+    </div>
+    <footer><div id="footer" >
+	
+	<div class="line">
+		<span></span>
+		<div class="author"></div>
+	</div>
+	
+	
+	<section class="info">
+		<p> welcome to xiaohushuo <br/>
+			this is my blog,cross the bridge when you come to it</p>
+	</section>
+	 
+	<div class="social-font" class="clearfix">
+		
+		
+		
+		
+		
+		
+		
+		
+		
+		
+	</div>
+			
+		
+
+		<!--<p class="copyright">-->
+		<!--Powered by <a href="http://hexo.io" target="_blank" title="hexo">hexo</a> and Theme by <a href="https://github.com/wuchong/jacman" target="_blank" title="Jacman">Jacman</a> © 2018 -->
+		<!---->
+		<!--<a href="/about" target="_blank" title="edward hu">edward hu</a>-->
+		<!---->
+		<!---->
+		<!--</p>-->
+</div>
+</footer>
+    <script src="/js/jquery-2.0.3.min.js"></script>
+<script src="/js/jquery.imagesloaded.min.js"></script>
+<script src="/js/gallery.js"></script>
+<script src="/js/jquery.qrcode-0.12.0.min.js"></script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.navbar').click(function(){
+    $('header nav').toggleClass('shownav');
+  });
+  var myWidth = 0;
+  function getSize(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+  };
+  var m = $('#main'),
+      a = $('#asidepart'),
+      c = $('.closeaside'),
+      o = $('.openaside');
+  c.click(function(){
+    a.addClass('fadeOut').css('display', 'none');
+    o.css('display', 'block').addClass('fadeIn');
+    m.addClass('moveMain');
+  });
+  o.click(function(){
+    o.css('display', 'none').removeClass('beforeFadeIn');
+    a.css('display', 'block').removeClass('fadeOut').addClass('fadeIn');      
+    m.removeClass('moveMain');
+  });
+  $(window).scroll(function(){
+    o.css("top",Math.max(80,260-$(this).scrollTop()));
+  });
+  
+  $(window).resize(function(){
+    getSize(); 
+    if (myWidth >= 1024) {
+      $('header nav').removeClass('shownav');
+    }else{
+      m.removeClass('moveMain');
+      a.css('display', 'block').removeClass('fadeOut');
+      o.css('display', 'none');
+      
+      $('#toc.toc-aside').css('display', 'none');
+        
+    }
+  });
+});
+</script>
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var ai = $('.article-content>iframe'),
+      ae = $('.article-content>embed'),
+      t  = $('#toc'),
+      ta = $('#toc.toc-aside'),
+      o  = $('.openaside'),
+      c  = $('.closeaside');
+  if(ai.length>0){
+    ai.wrap('<div class="video-container" />');
+  };
+  if(ae.length>0){
+   ae.wrap('<div class="video-container" />');
+  };
+  c.click(function(){
+    ta.css('display', 'block').addClass('fadeIn');
+  });
+  o.click(function(){
+    ta.css('display', 'none');
+  });
+  $(window).scroll(function(){
+    ta.css("top",Math.max(140,320-$(this).scrollTop()));
+  });
+});
+</script>
+
+
+<script type="text/javascript">
+$(document).ready(function(){ 
+  var $this = $('.share'),
+      url = $this.attr('data-url'),
+      encodedUrl = encodeURIComponent(url),
+      title = $this.attr('data-title'),
+      tsina = $this.attr('data-tsina'),
+      description = $this.attr('description');
+  var html = [
+  '<div class="hoverqrcode clearfix"></div>',
+  '<a class="overlay" id="qrcode"></a>',
+  '<a href="https://www.facebook.com/sharer.php?u=' + encodedUrl + '" class="article-share-facebook" target="_blank" title="Facebook"></a>',
+  '<a href="https://twitter.com/intent/tweet?url=' + encodedUrl + '" class="article-share-twitter" target="_blank" title="Twitter"></a>',
+  '<a href="#qrcode" class="article-share-qrcode" title="微信"></a>',
+  '<a href="http://widget.renren.com/dialog/share?resourceUrl=' + encodedUrl + '&srcUrl=' + encodedUrl + '&title=' + title +'" class="article-share-renren" target="_blank" title="人人"></a>',
+  '<a href="http://service.weibo.com/share/share.php?title='+title+'&url='+encodedUrl +'&ralateUid='+ tsina +'&searchPic=true&style=number' +'" class="article-share-weibo" target="_blank" title="微博"></a>',
+  '<span title="Share to"></span>'
+  ].join('');
+  $this.append(html);
+
+  $('.hoverqrcode').hide();
+
+  var myWidth = 0;
+  function updatehoverqrcode(){
+    if( typeof( window.innerWidth ) == 'number' ) {
+      myWidth = window.innerWidth;
+    } else if( document.documentElement && document.documentElement.clientWidth) {
+      myWidth = document.documentElement.clientWidth;
+    };
+    var qrsize = myWidth > 1024 ? 200:100;
+    var options = {render: 'image', size: qrsize, fill: '#2ca6cb', text: url, radius: 0.5, quiet: 1};
+    var p = $('.article-share-qrcode').position();
+    $('.hoverqrcode').empty().css('width', qrsize).css('height', qrsize)
+                          .css('left', p.left-qrsize/2+20).css('top', p.top-qrsize-10)
+                          .qrcode(options);
+  };
+  $(window).resize(function(){
+    $('.hoverqrcode').hide();
+  });
+  $('.article-share-qrcode').click(function(){
+    updatehoverqrcode();
+    $('.hoverqrcode').toggle();
+  });
+  $('.article-share-qrcode').hover(function(){}, function(){
+      $('.hoverqrcode').hide();
+  });
+});   
+</script>
+
+
+
+
+
+
+
+
+
+
+
+<link rel="stylesheet" href="/fancybox/jquery.fancybox.css" media="screen" type="text/css">
+<script src="/fancybox/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+$(document).ready(function(){ 
+  $('.article-content').each(function(i){
+    $(this).find('img').each(function(){
+      if ($(this).parent().hasClass('fancybox')) return;
+      var alt = this.alt;
+      if (alt) $(this).after('<span class="caption">' + alt + '</span>');
+      $(this).wrap('<a href="' + this.src + '" title="' + alt + '" class="fancybox"></a>');
+    });
+    $(this).find('.fancybox').each(function(){
+      $(this).attr('rel', 'article' + i);
+    });
+  });
+  if($.fancybox){
+    $('.fancybox').fancybox();
+  }
+}); 
+</script>
+
+
+
+<!-- Analytics Begin -->
+
+
+
+<script>
+var _hmt = _hmt || [];
+(function() {
+  var hm = document.createElement("script");
+  hm.src = "//hm.baidu.com/hm.js?7ac0957ebc7ebc3b8937f76c156d351d";
+  var s = document.getElementsByTagName("script")[0]; 
+  s.parentNode.insertBefore(hm, s);
+})();
+</script>
+
+
+
+<!-- Analytics End -->
+
+<!-- Totop Begin -->
+
+	<div id="totop">
+	<a title="返回顶部"><img src="/img/scrollup.png"/></a>
+	</div>
+	<script src="/js/totop.js"></script>
+
+<!-- Totop End -->
+
+<!-- MathJax Begin -->
+<!-- mathjax config similar to math.stackexchange -->
+
+
+<!-- MathJax End -->
+
+<!-- Tiny_search Begin -->
+
+<!-- Tiny_search End -->
+
+  </body>
+</html>
