@@ -17,6 +17,11 @@
     "hexo-server": "^0.2.0"
   },
   "devDependencies": {
-    "randomatic": "^3.0.0"
+    "cryptiles": "^4.1.2",
+    "hoek": "^5.0.4",
+    "lodash": "^4.17.11",
+    "randomatic": "^3.0.0",
+    "sshpk": "^1.15.1",
+    "uglify-js": "^2.6.0"
   }
 }
